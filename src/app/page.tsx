@@ -1,10 +1,13 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import Image from 'next/image';
+import styles from './page.module.css';
+import { InteractiveChart } from './components/InteractiveChart';
 
 export default function Home() {
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
+      <InteractiveChart />
+
+      {/* <div className={styles.description}>
         <p>
           Get started by editing&nbsp;
           <code className={styles.code}>src/app/page.tsx</code>
@@ -85,11 +88,9 @@ export default function Home() {
           <h2>
             Deploy <span>-&gt;</span>
           </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
+          <p>Instantly deploy your Next.js site to a shareable URL with Vercel.</p>
         </a>
-      </div>
+      </div> */}
     </main>
-  )
+  );
 }
