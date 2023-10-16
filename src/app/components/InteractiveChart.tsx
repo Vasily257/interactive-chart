@@ -1,4 +1,5 @@
 import styles from './page.module.css';
+import React from 'react';
 
 // Интерфейсы
 
@@ -76,7 +77,7 @@ const getData = async (): Promise<FetchData> => {
 // Разметка
 
 /** Компонент InteractiveChart */
-const InteractiveChart = async () => {
+const InteractiveChart: React.FC = async () => {
   const data = await getData();
   const { year, half_year, month } = data.finance.periods[0].graph;
 
