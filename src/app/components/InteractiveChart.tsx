@@ -1,55 +1,7 @@
 import styles from './page.module.css';
 import React from 'react';
-
-// Интерфейсы
-
-interface PeriodEarningsGraph {
-  year: Record<string, number | null>;
-  half_year: Record<string, number | null>;
-  month: Record<string, number | null>;
-}
-
-interface Period {
-  earnings: {
-    year_sum: number;
-    six_month_sum: number;
-    last_month_sum: number;
-  };
-  graph: PeriodEarningsGraph;
-}
-
-interface FinanceData {
-  total: {
-    sum: number;
-    donators_count: number;
-    regular_donators_count: number;
-  };
-  periods: Period[];
-}
-
-interface GiftSettings {
-  small_gift: number | null;
-  medium_gift: number | null;
-  big_gift: number | null;
-}
-
-interface GiftStats {
-  small_gift_count: number;
-  small_gift_sum: number;
-  small_medium_count: number;
-  small_medium_sum: number;
-  small_big_count: number;
-  small_big_sum: number;
-}
-
-interface FetchData {
-  nickname: string;
-  finance: FinanceData;
-  gift_settings: GiftSettings;
-  gift_stats: GiftStats;
-}
-
-// Константы
+import styles from './page.module.css';
+import { Period } from '../types/donator';
 
 /** Значения вертикальной оси */
 const verticalScaleItems: number[] = [0, 500, 1000, 2000, 5000, 10000];
@@ -61,7 +13,7 @@ const selectValues: Record<keyof Period['earnings'], string> = {
   last_month_sum: 'За последний месяц',
 };
 
-// Методы
+// Разметка
 
 /** Получить данные из fetch-запроса */
 const getData = async (): Promise<FetchData> => {
