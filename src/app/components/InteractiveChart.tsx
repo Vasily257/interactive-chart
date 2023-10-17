@@ -25,20 +25,29 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
 
   /** Получить данные для графиков (периоды и связанные значения) */
   const getGraphData = () => {
-    const entries = Object.entries(data.finance.periods[0].graph);
-    const graphData = {};
+    const graphData = {} as Record<GraphPeriod, GraphColumn[]>;
+
+    const entries = Object.entries(data.finance.periods[0].graph) as [
+      GraphPeriod,
+      Record<string, number | null>
+    ][];
 
     entries.forEach(entry => {
-      const periodName = entry[0];
-      const intervalsAndValues = Object.entries(entry[1]);
+      const periodName: GraphPeriod = entry[0];
+      const intervalsAndValues: [string, number | null][] = Object.entries(entry[1]);
 
-      graphData[periodName] = [{ interval: intervalsAndValues[0], value: intervalsAndValues[1] }];
+      graphData[periodName] = intervalsAndValues.map(data => {
+        return {
+          interval: data[0],
+          value: data[1],
+        };
+      });
     });
 
     return graphData;
   };
 
-  const graphData = getGraphData();
+  const graphData = getGraphData() || [];
 
   return (
     <div className={styles.chart}>
