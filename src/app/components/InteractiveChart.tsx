@@ -1,41 +1,44 @@
-import styles from './page.module.css';
 import React from 'react';
-import styles from './page.module.css';
-import { Period } from '../types/donator';
+import styles from './interactive-сhart.module.css';
+import { Donator, PeriodEarningsGraph } from '../types/donator';
+
+/** Периоды, для которых строится график */
+type GraphPeriod = keyof PeriodEarningsGraph;
+
+/** Значения периодов, для которых строится график */
+type GraphColumn = { interval: string; value: number | null };
 
 /** Значения вертикальной оси */
 const verticalScaleItems: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
 /** Возможные значения в селекте */
-const selectValues: Record<keyof Period['earnings'], string> = {
-  year_sum: 'За последний год',
-  six_month_sum: 'За последние 6 месяцев',
-  last_month_sum: 'За последний месяц',
+const selectValues: Record<GraphPeriod, string> = {
+  year: 'За последний год',
+  half_year: 'За последние 6 месяцев',
+  month: 'За последний месяц',
 };
-
-// Разметка
-
-/** Получить данные из fetch-запроса */
-const getData = async (): Promise<FetchData> => {
-  const response = await fetch('../../../public/data.json');
-
-  if (!response.ok) {
-    throw new Error(`Network response was not ok`);
-  }
-
-  return response.json();
-};
-
-// Разметка
 
 /** Компонент InteractiveChart */
-const InteractiveChart: React.FC = async () => {
-  const data = await getData();
-  const { year, half_year, month } = data.finance.periods[0].graph;
+const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
+  const currentGraph: GraphPeriod = 'year';
+  const unselectedPeriods: string[] = Object.values(selectValues);
 
-  const currentGraph = '';
+  /** Получить данные для графиков (периоды и связанные значения) */
+  const getGraphData = () => {
+    const entries = Object.entries(data.finance.periods[0].graph);
+    const graphData = {};
 
-  const showValues = Object.values(selectValues);
+    entries.forEach(entry => {
+      const periodName = entry[0];
+      const intervalsAndValues = Object.entries(entry[1]);
+
+      graphData[periodName] = [{ interval: intervalsAndValues[0], value: intervalsAndValues[1] }];
+    });
+
+    return graphData;
+  };
+
+  const graphData = getGraphData();
 
   return (
     <div className={styles.chart}>
@@ -44,7 +47,7 @@ const InteractiveChart: React.FC = async () => {
         <span className={styles.selectCurrentValue}></span>
         <button className={styles.selectButton}></button>
         <ul className={styles.selectValues}>
-          {showValues.map((selectValue: string, index: number) => {
+          {unselectedPeriods.map((selectValue: string, index: number) => {
             return (
               <li key={index} className={styles.selectValue}>
                 {selectValue}
@@ -65,7 +68,18 @@ const InteractiveChart: React.FC = async () => {
             );
           })}
         </ul>
-        <div className={styles.columnsContainer}></div>
+        <div className={styles.columnsContainer}>
+          <ul className={styles.columns}>
+            {graphData[currentGraph].map((column: GraphColumn, index: number) => {
+              return (
+                <li key={index} className={styles.column}>
+                  <span className={styles.columnInterval}>{column.interval}</span>
+                  <div className={styles.columnValue}>{column.value}</div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </div>
   );
