@@ -1,27 +1,23 @@
 import React from 'react';
 import styles from './interactive-сhart.module.css';
-import { Donator, PeriodEarningsGraph } from '../types/donator';
+import { Donator, GraphPeriod, GraphColumn } from '../types/donator';
 
-/** Периоды, для которых строится график */
-type GraphPeriod = keyof PeriodEarningsGraph;
+/** Значения по вертикальной оси */
+const VERTICAL_SCALE_ITEMS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
-/** Значения периодов, для которых строится график */
-type GraphColumn = { interval: string; value: number | null };
-
-/** Значения вертикальной оси */
-const verticalScaleItems: number[] = [0, 500, 1000, 2000, 5000, 10000];
-
-/** Возможные значения в селекте */
-const selectValues: Record<GraphPeriod, string> = {
+/** Все возможные периоды для графика*/
+const GRAPH_PERIODS: Record<GraphPeriod, string> = {
   year: 'За последний год',
   half_year: 'За последние 6 месяцев',
   month: 'За последний месяц',
 };
 
+/** Период для графика по умолчанию */
+const DEFAULT_GRAPH_PERIOD: GraphPeriod = 'year';
+
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
-  const currentGraph: GraphPeriod = 'year';
-  const unselectedPeriods: string[] = Object.values(selectValues);
+  const unselectedPeriods: string[] = Object.values(GRAPH_PERIODS);
 
   /** Получить данные для графиков (периоды и связанные значения) */
   const getGraphData = () => {
@@ -69,7 +65,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       {/* График */}
       <div className={styles.chartContainer}>
         <ul className={styles.verticalScale}>
-          {verticalScaleItems.map((verticalScaleItem: number, index: number) => {
+          {VERTICAL_SCALE_ITEMS.map((verticalScaleItem: number, index: number) => {
             return (
               <li key={index} className={styles.verticalScaleItem}>
                 {verticalScaleItem}
@@ -79,7 +75,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         </ul>
         <div className={styles.columnsContainer}>
           <ul className={styles.columns}>
-            {graphData[currentGraph].map((column: GraphColumn, index: number) => {
+            {graphData[DEFAULT_GRAPH_PERIOD].map((column: GraphColumn, index: number) => {
               return (
                 <li key={index} className={styles.column}>
                   <span className={styles.columnInterval}>{column.interval}</span>

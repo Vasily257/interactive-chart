@@ -37,6 +37,7 @@ interface GiftStats {
   small_big_sum: number;
 }
 
+/** Параметры API-ответа (данные по донатеру) */
 interface Donator {
   nickname: string;
   finance: FinanceData;
@@ -44,4 +45,10 @@ interface Donator {
   gift_stats: GiftStats;
 }
 
-export type { Donator, PeriodEarningsGraph };
+/** Периоды, для которых строится график */
+type GraphPeriod = keyof PeriodEarningsGraph;
+
+/** Отдельная колонка с данными */
+type GraphColumn = { interval: string; value: number | null };
+
+export type { Donator, PeriodEarningsGraph, GraphPeriod, GraphColumn };
