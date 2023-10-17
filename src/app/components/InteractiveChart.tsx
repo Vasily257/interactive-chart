@@ -15,35 +15,39 @@ const GRAPH_PERIODS: Record<GraphPeriod, string> = {
 /** Период для графика по умолчанию */
 const DEFAULT_GRAPH_PERIOD: GraphPeriod = 'year';
 
+/** Преобразовать данные графиков */
+const mapIntervalsAndValues = (intervalsAndValues: [string, number | null][]) => {
+  return intervalsAndValues.map(([interval, value]) => ({
+    interval,
+    value,
+  }));
+};
+
+/** Получить данные для графиков (периоды и связанные значения) */
+const getGraphData = (data: Donator) => {
+  const graphData = {} as Record<GraphPeriod, GraphColumn[]>;
+
+  // Разбить данные графиков на периоды и объекты в формате «интервал/значение»
+  const PeriodsWithData = Object.entries(data.finance.periods[0].graph) as [
+    GraphPeriod,
+    Record<string, number | null>
+  ][];
+
+  // Пересобрать данные графиков, чтобы их можно было перебрать в разметке
+  PeriodsWithData.forEach(entry => {
+    const periodName: GraphPeriod = entry[0];
+    const intervalsAndValues: [string, number | null][] = Object.entries(entry[1]);
+
+    graphData[periodName] = mapIntervalsAndValues(intervalsAndValues);
+  });
+
+  return graphData;
+};
+
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   const unselectedPeriods: string[] = Object.values(GRAPH_PERIODS);
-
-  /** Получить данные для графиков (периоды и связанные значения) */
-  const getGraphData = () => {
-    const graphData = {} as Record<GraphPeriod, GraphColumn[]>;
-
-    const entries = Object.entries(data.finance.periods[0].graph) as [
-      GraphPeriod,
-      Record<string, number | null>
-    ][];
-
-    entries.forEach(entry => {
-      const periodName: GraphPeriod = entry[0];
-      const intervalsAndValues: [string, number | null][] = Object.entries(entry[1]);
-
-      graphData[periodName] = intervalsAndValues.map(data => {
-        return {
-          interval: data[0],
-          value: data[1],
-        };
-      });
-    });
-
-    return graphData;
-  };
-
-  const graphData = getGraphData() || [];
+  const graphData = getGraphData(data) || {};
 
   return (
     <div className={styles.chart}>
