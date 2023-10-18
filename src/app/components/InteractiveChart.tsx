@@ -11,10 +11,11 @@ type GraphPeriod = keyof PeriodEarningsGraph;
 type GraphColumn = { interval: string; value: number | null };
 
 /** Переменные состояния */
-type State = { currentPeriod: GraphPeriod };
+type State = { currentPeriod: GraphPeriod; isSelectOpen: boolean };
 
 /** Действия, доступные в редьюсере */
 type Action =
+  | { type: 'TOGGLE_SELECT_LIST' }
   | { type: 'CHOOSE_YEAR' }
   | { type: 'CHOOSE_HALF_YEAR' }
   | { type: 'CHOOSE_LAST_MONTH' };
@@ -23,7 +24,7 @@ type Action =
 const VERTICAL_SCALE_ITEMS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
 /** Описания периодов */
-const GRAPH_PERIODS: Record<GraphPeriod, string> = {
+const GRAPH_PERIOD_TEXT: Record<GraphPeriod, string> = {
   year: 'За последний год',
   half_year: 'За последние 6 месяцев',
   month: 'За последний месяц',
@@ -31,22 +32,40 @@ const GRAPH_PERIODS: Record<GraphPeriod, string> = {
 
 /** Начальные значения переменных состояния */
 const initialState: State = {
+  isSelectOpen: false,
   currentPeriod: 'year',
 };
 
 /** Функция-редьюсер */
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
+    case 'TOGGLE_SELECT_LIST':
+      return { ...state, isSelectOpen: !state.isSelectOpen };
     case 'CHOOSE_YEAR':
-      return { ...state, currentPeriod: 'year' as GraphPeriod };
+      return { ...state, isSelectOpen: false, currentPeriod: 'year' as GraphPeriod };
     case 'CHOOSE_HALF_YEAR':
-      return { ...state, currentPeriod: 'half_year' as GraphPeriod };
+      return { ...state, isSelectOpen: false, currentPeriod: 'half_year' as GraphPeriod };
     case 'CHOOSE_LAST_MONTH':
-      return { ...state, currentPeriod: 'month' as GraphPeriod };
-
+      return { ...state, isSelectOpen: false, currentPeriod: 'month' as GraphPeriod };
     default:
       return state;
   }
+};
+
+/** Получить список периодов, кроме текущего */
+const getUnselectedPeriods = (currentPeriod: GraphPeriod) => {
+  const unselectedPeriods: { periodKey: GraphPeriod; periodValue: string }[] = [];
+
+  Object.entries(GRAPH_PERIOD_TEXT).map(text => {
+    const periodKey = text[0] as GraphPeriod;
+    const periodValue = text[1];
+
+    if (periodKey !== currentPeriod) {
+      unselectedPeriods.push({ periodKey, periodValue });
+    }
+  });
+
+  return unselectedPeriods;
 };
 
 /** Преобразовать данные графиков */
@@ -82,28 +101,63 @@ const getGraphData = (data: Donator) => {
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   const [state, dispatch] = useReducer<React.Reducer<State, Action>>(reducer, initialState);
 
+  /** Обработать клик по верхней кнопке селекта */
+  const handleClickOnSelectButtonTop = () => {
+    dispatch({ type: 'TOGGLE_SELECT_LIST' });
+  };
+
+  /** Обработать клик по нижней кнопке селекта */
+  const handleClickOnSelectButtonBottom = (evt: React.MouseEvent<HTMLButtonElement>) => {
+    const target = evt.target as HTMLButtonElement;
+
+    if (target.id === 'select-button-bottom-year') {
+      dispatch({ type: 'CHOOSE_YEAR' });
+    }
+
+    if (target.id === 'select-button-bottom-half_year') {
+      dispatch({ type: 'CHOOSE_HALF_YEAR' });
+    }
+
+    if (target.id === 'select-button-bottom-month') {
+      dispatch({ type: 'CHOOSE_LAST_MONTH' });
+    }
+  };
+
   const { selectButton, selectButtonTop } = styles;
 
-  const unselectedPeriods: string[] = Object.values(GRAPH_PERIODS);
-  const graphData = getGraphData(data) || {};
+  const unselectedPeriods = getUnselectedPeriods(state.currentPeriod);
+  const graphData = getGraphData(data);
 
   return (
     <div className={styles.chart}>
       {/* Кнопка с выбором типа графика */}
       <div className={styles.selectBox}>
-        <button className={`${selectButton} ${selectButtonTop}`}>
-          <span className={styles.selectCurrentValue}>{GRAPH_PERIODS[state.currentPeriod]}</span>
+        <button
+          className={`${selectButton} ${selectButtonTop}`}
+          onClick={handleClickOnSelectButtonTop}
+        >
+          <span className={styles.selectCurrentValue}>
+            {GRAPH_PERIOD_TEXT[state.currentPeriod]}
+          </span>
           <span className={styles.selectIcon}></span>
         </button>
-        <ul className={styles.selectValues}>
-          {unselectedPeriods.map((selectValue: string, index: number) => {
-            return (
-              <li key={index} className={styles.selectValue}>
-                <button className={styles.selectButton}>{selectValue}</button>
-              </li>
-            );
-          })}
-        </ul>
+        {state.isSelectOpen && (
+          <ul className={styles.selectValues}>
+            {unselectedPeriods.map((period, index: number) => {
+              return (
+                <li key={index} className={styles.selectValue}>
+                  <button
+                    className={styles.selectButton}
+                    onClick={handleClickOnSelectButtonBottom}
+                    id={`select-button-bottom-${period.periodKey}`}
+                  >
+                    {period.periodValue}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
 
       {/* График */}
