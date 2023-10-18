@@ -118,31 +118,46 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     }
   };
 
-  const { selectButton, selectButtonTop } = styles;
+  const {
+    chart,
+    selectBox,
+    selectButton,
+    selectButtonTop,
+    selectCurrentValue,
+    selectIcon,
+    selectValues,
+    selectValue,
+    chartContainer,
+    verticalScale,
+    verticalScaleItem,
+    columnsContainer,
+    columns,
+    column,
+    columnInterval,
+    columnValue,
+  } = styles;
 
   const unselectedPeriods = getUnselectedPeriods(state.currentPeriod);
   const graphData = getGraphData(data);
 
   return (
-    <div className={styles.chart}>
+    <div className={chart}>
       {/* Кнопка с выбором типа графика */}
-      <div className={styles.selectBox}>
+      <div className={selectBox}>
         <button
           className={`${selectButton} ${selectButtonTop}`}
           onClick={handleClickOnSelectButtonTop}
         >
-          <span className={styles.selectCurrentValue}>
-            {GRAPH_PERIOD_TEXT[state.currentPeriod]}
-          </span>
-          <span className={styles.selectIcon}></span>
+          <span className={selectCurrentValue}>{GRAPH_PERIOD_TEXT[state.currentPeriod]}</span>
+          <span className={selectIcon}></span>
         </button>
         {state.isSelectOpen && (
-          <ul className={styles.selectValues}>
+          <ul className={selectValues}>
             {unselectedPeriods.map((period, index: number) => {
               return (
-                <li key={index} className={styles.selectValue}>
+                <li key={index} className={selectValue}>
                   <button
-                    className={styles.selectButton}
+                    className={selectButton}
                     onClick={handleClickOnSelectButtonBottom}
                     id={`select-button-bottom-${period.periodKey}`}
                   >
@@ -156,23 +171,23 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       </div>
 
       {/* График */}
-      <div className={styles.chartContainer}>
-        <ul className={styles.verticalScale}>
-          {VERTICAL_SCALE_ITEMS.map((verticalScaleItem: number, index: number) => {
+      <div className={chartContainer}>
+        <ul className={verticalScale}>
+          {VERTICAL_SCALE_ITEMS.map((scaleItem: number, index: number) => {
             return (
-              <li key={index} className={styles.verticalScaleItem}>
-                {verticalScaleItem}
+              <li key={index} className={verticalScaleItem}>
+                {scaleItem}
               </li>
             );
           })}
         </ul>
-        <div className={styles.columnsContainer}>
-          <ul className={styles.columns}>
-            {graphData[state.currentPeriod].map((column: GraphColumn, index: number) => {
+        <div className={columnsContainer}>
+          <ul className={columns}>
+            {graphData[state.currentPeriod].map((columnItem: GraphColumn, index: number) => {
               return (
-                <li key={index} className={styles.column}>
-                  <span className={styles.columnInterval}>{column.interval}</span>
-                  <div className={styles.columnValue}>{column.value}</div>
+                <li key={index} className={column}>
+                  <span className={columnInterval}>{columnItem.interval}</span>
+                  <div className={columnValue}>{columnItem.value}</div>
                 </li>
               );
             })}
