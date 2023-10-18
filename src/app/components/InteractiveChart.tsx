@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useReducer } from 'react';
-import styles from './interactive-сhart.module.css';
+import styles from './interactiveChart.module.css';
 import { Donator, PeriodEarningsGraph } from '../types/donator';
 
 /** Периоды, для которых строится график */
