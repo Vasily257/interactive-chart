@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useReducer } from 'react';
 import styles from './interactive-сhart.module.css';
 import { Donator, PeriodEarningsGraph } from '../types/donator';
 
@@ -8,8 +10,14 @@ type GraphPeriod = keyof PeriodEarningsGraph;
 /** Отдельная колонка с данными */
 type GraphColumn = { interval: string; value: number | null };
 
-/** Начальные значения переменных состояния */
-type InitialState = { currentPeriod: GraphPeriod };
+/** Переменные состояния */
+type State = { currentPeriod: GraphPeriod };
+
+/** Действия, доступные в редьюсере */
+type Action =
+  | { type: 'CHOOSE_YEAR' }
+  | { type: 'CHOOSE_HALF_YEAR' }
+  | { type: 'CHOOSE_LAST_MONTH' };
 
 /** Значения по вертикальной оси */
 const VERTICAL_SCALE_ITEMS: number[] = [0, 500, 1000, 2000, 5000, 10000];
@@ -21,8 +29,25 @@ const GRAPH_PERIODS: Record<GraphPeriod, string> = {
   month: 'За последний месяц',
 };
 
-/** Период для графика по умолчанию */
-const DEFAULT_GRAPH_PERIOD: GraphPeriod = 'year';
+/** Начальные значения переменных состояния */
+const initialState: State = {
+  currentPeriod: 'year',
+};
+
+/** Функция-редьюсер */
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case 'CHOOSE_YEAR':
+      return { ...state, currentPeriod: 'year' as GraphPeriod };
+    case 'CHOOSE_HALF_YEAR':
+      return { ...state, currentPeriod: 'half_year' as GraphPeriod };
+    case 'CHOOSE_LAST_MONTH':
+      return { ...state, currentPeriod: 'month' as GraphPeriod };
+
+    default:
+      return state;
+  }
+};
 
 /** Преобразовать данные графиков */
 const mapIntervalsAndValues = (intervalsAndValues: [string, number | null][]) => {
@@ -55,17 +80,19 @@ const getGraphData = (data: Donator) => {
 
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
-  const unselectedPeriods: string[] = Object.values(GRAPH_PERIODS);
-  const graphData = getGraphData(data) || {};
+  const [state, dispatch] = useReducer<React.Reducer<State, Action>>(reducer, initialState);
 
   const { selectButton, selectButtonTop } = styles;
+
+  const unselectedPeriods: string[] = Object.values(GRAPH_PERIODS);
+  const graphData = getGraphData(data) || {};
 
   return (
     <div className={styles.chart}>
       {/* Кнопка с выбором типа графика */}
       <div className={styles.selectBox}>
         <button className={`${selectButton} ${selectButtonTop}`}>
-          <span className={styles.selectCurrentValue}>{GRAPH_PERIODS[DEFAULT_GRAPH_PERIOD]}</span>
+          <span className={styles.selectCurrentValue}>{GRAPH_PERIODS[state.currentPeriod]}</span>
           <span className={styles.selectIcon}></span>
         </button>
         <ul className={styles.selectValues}>
@@ -92,7 +119,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         </ul>
         <div className={styles.columnsContainer}>
           <ul className={styles.columns}>
-            {graphData[DEFAULT_GRAPH_PERIOD].map((column: GraphColumn, index: number) => {
+            {graphData[state.currentPeriod].map((column: GraphColumn, index: number) => {
               return (
                 <li key={index} className={styles.column}>
                   <span className={styles.columnInterval}>{column.interval}</span>
