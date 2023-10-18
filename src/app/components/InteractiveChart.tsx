@@ -2,10 +2,14 @@
 
 import React, { useReducer } from 'react';
 import styles from './interactiveChart.module.css';
-import { Donator, PeriodEarningsGraph } from '../types/donator';
+import { Donator } from '../types/donator';
 
-/** Периоды, для которых строится график */
-type GraphPeriod = keyof PeriodEarningsGraph;
+/** Периоды, для которых строится график (на основе PeriodEarningsGraph) */
+enum GraphPeriod {
+  YEAR = 'year',
+  HALF_YEAR = 'half_year',
+  MONTH = 'month',
+}
 
 /** Отдельная колонка с данными */
 type GraphColumn = { interval: string; value: number | null };
@@ -24,16 +28,16 @@ type Action =
 const VERTICAL_SCALE_ITEMS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
 /** Описания периодов */
-const GRAPH_PERIOD_TEXT: Record<GraphPeriod, string> = {
-  year: 'За последний год',
-  half_year: 'За последние 6 месяцев',
-  month: 'За последний месяц',
+const GRAPH_PERIOD_TEXT = {
+  [GraphPeriod.YEAR]: 'За последний год',
+  [GraphPeriod.HALF_YEAR]: 'За последние 6 месяцев',
+  [GraphPeriod.MONTH]: 'За последний месяц',
 };
 
 /** Начальные значения переменных состояния */
 const initialState: State = {
   isSelectOpen: false,
-  currentPeriod: 'year',
+  currentPeriod: GraphPeriod.YEAR,
 };
 
 /** Функция-редьюсер */
@@ -42,11 +46,11 @@ const reducer = (state: State, action: Action) => {
     case 'TOGGLE_SELECT_LIST':
       return { ...state, isSelectOpen: !state.isSelectOpen };
     case 'CHOOSE_YEAR':
-      return { ...state, isSelectOpen: false, currentPeriod: 'year' as GraphPeriod };
+      return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.YEAR };
     case 'CHOOSE_HALF_YEAR':
-      return { ...state, isSelectOpen: false, currentPeriod: 'half_year' as GraphPeriod };
+      return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.HALF_YEAR };
     case 'CHOOSE_LAST_MONTH':
-      return { ...state, isSelectOpen: false, currentPeriod: 'month' as GraphPeriod };
+      return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.MONTH };
     default:
       return state;
   }
@@ -110,15 +114,15 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   const handleClickOnSelectButtonBottom = (evt: React.MouseEvent<HTMLButtonElement>) => {
     const target = evt.target as HTMLButtonElement;
 
-    if (target.id === 'select-button-bottom-year') {
+    if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
       dispatch({ type: 'CHOOSE_YEAR' });
     }
 
-    if (target.id === 'select-button-bottom-half_year') {
+    if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
       dispatch({ type: 'CHOOSE_HALF_YEAR' });
     }
 
-    if (target.id === 'select-button-bottom-month') {
+    if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
       dispatch({ type: 'CHOOSE_LAST_MONTH' });
     }
   };

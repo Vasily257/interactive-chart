@@ -45,4 +45,4 @@ interface Donator {
   gift_stats: GiftStats;
 }
 
-export type { Donator, PeriodEarningsGraph };
+export type { Donator };
