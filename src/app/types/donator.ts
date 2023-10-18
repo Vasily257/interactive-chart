@@ -45,10 +45,4 @@ interface Donator {
   gift_stats: GiftStats;
 }
 
-/** Периоды, для которых строится график */
-type GraphPeriod = keyof PeriodEarningsGraph;
-
-/** Отдельная колонка с данными */
-type GraphColumn = { interval: string; value: number | null };
-
-export type { Donator, PeriodEarningsGraph, GraphPeriod, GraphColumn };
+export type { Donator, PeriodEarningsGraph };

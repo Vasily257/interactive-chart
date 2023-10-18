@@ -1,6 +1,15 @@
 import React from 'react';
 import styles from './interactive-сhart.module.css';
-import { Donator, GraphPeriod, GraphColumn } from '../types/donator';
+import { Donator, PeriodEarningsGraph } from '../types/donator';
+
+/** Периоды, для которых строится график */
+type GraphPeriod = keyof PeriodEarningsGraph;
+
+/** Отдельная колонка с данными */
+type GraphColumn = { interval: string; value: number | null };
+
+/** Начальные значения переменных состояния */
+type InitialState = { currentPeriod: GraphPeriod };
 
 /** Значения по вертикальной оси */
 const VERTICAL_SCALE_ITEMS: number[] = [0, 500, 1000, 2000, 5000, 10000];
