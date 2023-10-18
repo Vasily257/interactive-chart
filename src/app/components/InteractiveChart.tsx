@@ -49,17 +49,21 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   const unselectedPeriods: string[] = Object.values(GRAPH_PERIODS);
   const graphData = getGraphData(data) || {};
 
+  const { selectButton, selectButtonTop } = styles;
+
   return (
     <div className={styles.chart}>
       {/* Кнопка с выбором типа графика */}
       <div className={styles.selectBox}>
-        <span className={styles.selectCurrentValue}></span>
-        <button className={styles.selectButton}></button>
+        <button className={`${selectButton} ${selectButtonTop}`}>
+          <span className={styles.selectCurrentValue}>{GRAPH_PERIODS[DEFAULT_GRAPH_PERIOD]}</span>
+          <span className={styles.selectIcon}></span>
+        </button>
         <ul className={styles.selectValues}>
           {unselectedPeriods.map((selectValue: string, index: number) => {
             return (
               <li key={index} className={styles.selectValue}>
-                {selectValue}
+                <button className={styles.selectButton}>{selectValue}</button>
               </li>
             );
           })}
