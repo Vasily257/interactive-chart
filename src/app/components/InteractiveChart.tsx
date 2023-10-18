@@ -58,18 +58,9 @@ const reducer = (state: State, action: Action) => {
 
 /** Получить список периодов, кроме текущего */
 const getUnselectedPeriods = (currentPeriod: GraphPeriod) => {
-  const unselectedPeriods: { periodKey: GraphPeriod; periodValue: string }[] = [];
-
-  Object.entries(GRAPH_PERIOD_TEXT).map(text => {
-    const periodKey = text[0] as GraphPeriod;
-    const periodValue = text[1];
-
-    if (periodKey !== currentPeriod) {
-      unselectedPeriods.push({ periodKey, periodValue });
-    }
-  });
-
-  return unselectedPeriods;
+  return Object.entries(GRAPH_PERIOD_TEXT)
+    .filter(([periodKey]) => periodKey !== currentPeriod)
+    .map(([periodKey, periodValue]) => ({ periodKey, periodValue }));
 };
 
 /** Преобразовать данные графиков */
