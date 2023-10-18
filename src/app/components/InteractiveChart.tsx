@@ -5,7 +5,7 @@ import { Donator, GraphPeriod, GraphColumn } from '../types/donator';
 /** Значения по вертикальной оси */
 const VERTICAL_SCALE_ITEMS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
-/** Все возможные периоды для графика*/
+/** Описания периодов */
 const GRAPH_PERIODS: Record<GraphPeriod, string> = {
   year: 'За последний год',
   half_year: 'За последние 6 месяцев',
