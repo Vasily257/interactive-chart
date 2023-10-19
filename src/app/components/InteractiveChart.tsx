@@ -3,6 +3,7 @@
 import React, { useReducer } from 'react';
 import styles from './interactiveChart.module.css';
 import { Donator } from '../types/donator';
+import addLeadingZero from '../helpers/addLeadingZero';
 
 /** Периоды, для которых строится график (на основе PeriodEarningsGraph) */
 enum GraphPeriod {
@@ -10,9 +11,6 @@ enum GraphPeriod {
   HALF_YEAR = 'half_year',
   MONTH = 'month',
 }
-
-/** Отдельная колонка с данными */
-type GraphColumn = { interval: string; value: number | null };
 
 /** Переменные состояния */
 type State = { currentPeriod: GraphPeriod; isSelectOpen: boolean };
@@ -64,16 +62,35 @@ const getUnselectedPeriods = (currentPeriod: GraphPeriod) => {
 };
 
 /** Преобразовать данные графиков */
-const mapIntervalsAndValues = (intervalsAndValues: [string, number | null][]) => {
-  return intervalsAndValues.map(([interval, value]) => ({
-    interval,
-    value,
-  }));
+const mapLabelsAndValues = (periodName: string, labelsAndValues: [string, number | null][]) => {
+  const horizontalScaleLabels: Array<string | number> = [];
+  const columnValues: number[] = [];
+
+  labelsAndValues.map(([label, value], index) => {
+    if (periodName === GraphPeriod.MONTH) {
+      const isShowedLabel = index === 0 || (index + 1) % 5 === 0;
+
+      if (isShowedLabel) {
+        horizontalScaleLabels.push(addLeadingZero(Number(label)));
+      }
+    } else {
+      horizontalScaleLabels.push(label.substring(0, 3));
+    }
+
+    if (typeof value === 'number') {
+      columnValues.push(value);
+    }
+  });
+
+  return { horizontalScaleLabels, columnValues };
 };
 
 /** Получить данные для графиков (периоды и связанные значения) */
 const getGraphData = (data: Donator) => {
-  const graphData = {} as Record<GraphPeriod, GraphColumn[]>;
+  const graphData = {} as Record<
+    GraphPeriod,
+    { horizontalScaleLabels: Array<string | number>; columnValues: number[] }
+  >;
 
   // Разбить данные графиков на периоды и объекты в формате «интервал/значение»
   const PeriodsWithData = Object.entries(data.finance.periods[0].graph) as [
@@ -84,14 +101,9 @@ const getGraphData = (data: Donator) => {
   // Пересобрать данные графиков, чтобы их можно было перебрать в разметке
   PeriodsWithData.forEach(entry => {
     const periodName: GraphPeriod = entry[0];
-    const intervalsAndValues: [string, number | null][] = Object.entries(entry[1]);
+    const labelsAndValues: [string, number | null][] = Object.entries(entry[1]);
 
-    // Обрезать значение интервалов, чтобы они занимали не больше 3 символов (нужно для месяцев)
-    const croppedIntervalsAndValues: [string, number | null][] = intervalsAndValues.map(
-      ([interval, value]) => [interval.substring(0, 3), value]
-    );
-
-    graphData[periodName] = mapIntervalsAndValues(croppedIntervalsAndValues);
+    graphData[periodName] = mapLabelsAndValues(periodName, labelsAndValues);
   });
 
   return graphData;
@@ -100,6 +112,11 @@ const getGraphData = (data: Donator) => {
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   const [state, dispatch] = useReducer<React.Reducer<State, Action>>(reducer, initialState);
+
+  const isMonthPeriod = state.currentPeriod === GraphPeriod.MONTH;
+
+  const unselectedPeriods = getUnselectedPeriods(state.currentPeriod);
+  const graphData = getGraphData(data);
 
   /** Обработать клик по верхней кнопке селекта */
   const handleClickOnSelectButtonTop = () => {
@@ -133,16 +150,14 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     selectValues,
     selectValue,
     graphBox,
-    verticalScale,
-    verticalScaleItem,
-    columns,
-    column,
-    columnInterval,
+    verticalScaleLabels,
+    verticalScaleLabel,
+    columnValues,
     columnValue,
+    columnValueThin,
+    horizontalScaleLabels,
+    horizontalScaleLabel,
   } = styles;
-
-  const unselectedPeriods = getUnselectedPeriods(state.currentPeriod);
-  const graphData = getGraphData(data);
 
   return (
     <div className={chart}>
@@ -157,7 +172,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         </button>
         {state.isSelectOpen && (
           <ul className={selectValues}>
-            {unselectedPeriods.map((period, index: number) => {
+            {unselectedPeriods.map((period, index) => {
               return (
                 <li key={index} className={selectValue}>
                   <button
@@ -176,24 +191,31 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
 
       {/* График */}
       <div className={graphBox}>
-        <ul className={verticalScale}>
-          {VERTICAL_SCALE_ITEMS.map((scaleItem: number, index: number) => {
+        <ul className={verticalScaleLabels}>
+          {VERTICAL_SCALE_ITEMS.map((scaleItem, index) => {
             return (
-              <li key={index} className={verticalScaleItem}>
+              <li key={index} className={verticalScaleLabel}>
                 {scaleItem}
               </li>
             );
           })}
         </ul>
-        <ul className={columns}>
-          {graphData[state.currentPeriod].map((columnItem: GraphColumn, index: number) => {
+        <ul className={columnValues}>
+          {graphData[state.currentPeriod].columnValues.map((value, index) => {
             return (
-              <li key={index} className={column}>
-                <div
-                  className={columnValue}
-                  style={{ height: `calc(${columnItem.value}/10000 * 100%)` }}
-                ></div>
-                <span className={columnInterval}>{columnItem.interval}</span>
+              <li
+                key={index}
+                style={{ height: `calc(${value}/10000 * 100%)` }}
+                className={`${columnValue} ${isMonthPeriod && columnValueThin}`}
+              ></li>
+            );
+          })}
+        </ul>
+        <ul className={horizontalScaleLabels}>
+          {graphData[state.currentPeriod].horizontalScaleLabels.map((label, index) => {
+            return (
+              <li key={index} className={horizontalScaleLabel}>
+                {label}
               </li>
             );
           })}
