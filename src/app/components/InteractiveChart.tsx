@@ -25,7 +25,7 @@ type Action =
   | { type: 'CHOOSE_LAST_MONTH' };
 
 /** Значения по вертикальной оси */
-const VERTICAL_SCALE_ITEMS: number[] = [0, 500, 1000, 2000, 5000, 10000];
+const VERTICAL_SCALE_ITEMS: number[] = [10000, 5000, 2000, 1000, 500, 0];
 
 /** Описания периодов */
 const GRAPH_PERIOD_TEXT = {
@@ -86,7 +86,12 @@ const getGraphData = (data: Donator) => {
     const periodName: GraphPeriod = entry[0];
     const intervalsAndValues: [string, number | null][] = Object.entries(entry[1]);
 
-    graphData[periodName] = mapIntervalsAndValues(intervalsAndValues);
+    // Обрезать значение интервалов, чтобы они занимали не больше 3 символов (нужно для месяцев)
+    const croppedIntervalsAndValues: [string, number | null][] = intervalsAndValues.map(
+      ([interval, value]) => [interval.substring(0, 3), value]
+    );
+
+    graphData[periodName] = mapIntervalsAndValues(croppedIntervalsAndValues);
   });
 
   return graphData;
@@ -127,10 +132,9 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     selectIcon,
     selectValues,
     selectValue,
-    chartContainer,
+    graphBox,
     verticalScale,
     verticalScaleItem,
-    columnsContainer,
     columns,
     column,
     columnInterval,
@@ -171,7 +175,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       </div>
 
       {/* График */}
-      <div className={chartContainer}>
+      <div className={graphBox}>
         <ul className={verticalScale}>
           {VERTICAL_SCALE_ITEMS.map((scaleItem: number, index: number) => {
             return (
@@ -181,18 +185,19 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
             );
           })}
         </ul>
-        <div className={columnsContainer}>
-          <ul className={columns}>
-            {graphData[state.currentPeriod].map((columnItem: GraphColumn, index: number) => {
-              return (
-                <li key={index} className={column}>
-                  <span className={columnInterval}>{columnItem.interval}</span>
-                  <div className={columnValue}>{columnItem.value}</div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <ul className={columns}>
+          {graphData[state.currentPeriod].map((columnItem: GraphColumn, index: number) => {
+            return (
+              <li key={index} className={column}>
+                <div
+                  className={columnValue}
+                  style={{ height: `calc(${columnItem.value}/10000 * 100%)` }}
+                ></div>
+                <span className={columnInterval}>{columnItem.interval}</span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
