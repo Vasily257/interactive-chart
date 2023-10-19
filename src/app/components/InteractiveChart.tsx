@@ -23,7 +23,7 @@ type Action =
   | { type: 'CHOOSE_LAST_MONTH' };
 
 /** Значения по вертикальной оси */
-const VERTICAL_SCALE_ITEMS: number[] = [10000, 5000, 2000, 1000, 500, 0];
+const VERTICAL_SCALE_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
 /** Описания периодов */
 const GRAPH_PERIOD_TEXT = {
@@ -31,6 +31,9 @@ const GRAPH_PERIOD_TEXT = {
   [GraphPeriod.HALF_YEAR]: 'За последние 6 месяцев',
   [GraphPeriod.MONTH]: 'За последний месяц',
 };
+
+/** Значения по вертикальной оси, отсортированные по убыванию */
+const reversedVerticalScaleItems = [...VERTICAL_SCALE_LABELS].reverse();
 
 /** Начальные значения переменных состояния */
 const initialState: State = {
@@ -107,6 +110,43 @@ const getGraphData = (data: Donator) => {
   });
 
   return graphData;
+};
+
+/** Найти пограничные индексы */
+const findBorderIndexes = (array: number[], value: number) => {
+  let left: number = 0;
+  let right: number = array.length - 1;
+
+  if (value < array[0] || value > array[right]) {
+    return [-1, -1];
+  }
+
+  while (left < right) {
+    if (array[left] < value) {
+      left += 1;
+    } else {
+      return [left - 1, left];
+    }
+
+    if (array[right] > value) {
+      right -= 1;
+    } else {
+      return [right, right + 1];
+    }
+  }
+
+  return [right, left];
+};
+/** Рассчитать высоту колонки */
+const calculateRelativeColumnHeight = (value: number) => {
+  const labels = VERTICAL_SCALE_LABELS;
+
+  const [left, right] = findBorderIndexes(labels, value);
+
+  const baseHeight = (left + 1) / labels.length;
+  const additionalHeight = (value - labels[left]) / (labels[right] - labels[left]) / labels.length;
+
+  return baseHeight + additionalHeight;
 };
 
 /** Компонент InteractiveChart */
@@ -192,7 +232,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       {/* График */}
       <div className={graphBox}>
         <ul className={verticalScaleLabels}>
-          {VERTICAL_SCALE_ITEMS.map((scaleItem, index) => {
+          {reversedVerticalScaleItems.map((scaleItem, index) => {
             return (
               <li key={index} className={verticalScaleLabel}>
                 {scaleItem}
@@ -205,7 +245,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
             return (
               <li
                 key={index}
-                style={{ height: `calc(${value}/10000 * 100%)` }}
+                style={{ height: `calc(${calculateRelativeColumnHeight(value)} * 100%)` }}
                 className={`${columnValue} ${isMonthPeriod && columnValueThin}`}
               ></li>
             );
