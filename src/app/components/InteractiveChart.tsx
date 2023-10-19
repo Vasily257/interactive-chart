@@ -196,6 +196,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     columnValue,
     columnValueThin,
     horizontalScaleLabels,
+    horizontalScaleLabelsExpanded,
     horizontalScaleLabel,
   } = styles;
 
@@ -251,7 +252,9 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
             );
           })}
         </ul>
-        <ul className={horizontalScaleLabels}>
+        <ul
+          className={`${horizontalScaleLabels} ${isMonthPeriod && horizontalScaleLabelsExpanded}`}
+        >
           {graphData[state.currentPeriod].horizontalScaleLabels.map((label, index) => {
             return (
               <li key={index} className={horizontalScaleLabel}>
