@@ -248,6 +248,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
                 key={index}
                 style={{ height: `calc(${calculateRelativeColumnHeight(value)} * 100%)` }}
                 className={`${columnValue} ${isMonthPeriod && columnValueThin}`}
+                data-value={value}
               ></li>
             );
           })}
