@@ -12,15 +12,23 @@ enum GraphPeriod {
   MONTH = 'month',
 }
 
+/** Перечисление действий, доступных в редьюсере */
+enum ReducerAction {
+  TOGGLE_SELECT_LIST = 'TOGGLE_SELECT_LIST',
+  CHOOSE_YEAR = 'CHOOSE_YEAR',
+  CHOOSE_HALF_YEAR = 'CHOOSE_HALF_YEAR',
+  CHOOSE_LAST_MONTH = 'CHOOSE_LAST_MONTH',
+}
+
 /** Переменные состояния */
 type State = { currentPeriod: GraphPeriod; isSelectOpen: boolean };
 
 /** Действия, доступные в редьюсере */
 type Action =
-  | { type: 'TOGGLE_SELECT_LIST' }
-  | { type: 'CHOOSE_YEAR' }
-  | { type: 'CHOOSE_HALF_YEAR' }
-  | { type: 'CHOOSE_LAST_MONTH' };
+  | { type: ReducerAction.TOGGLE_SELECT_LIST }
+  | { type: ReducerAction.CHOOSE_YEAR }
+  | { type: ReducerAction.CHOOSE_HALF_YEAR }
+  | { type: ReducerAction.CHOOSE_LAST_MONTH };
 
 /** Значения по вертикальной оси */
 const VERTICAL_SCALE_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
@@ -44,13 +52,13 @@ const initialState: State = {
 /** Функция-редьюсер */
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case 'TOGGLE_SELECT_LIST':
+    case ReducerAction.TOGGLE_SELECT_LIST:
       return { ...state, isSelectOpen: !state.isSelectOpen };
-    case 'CHOOSE_YEAR':
+    case ReducerAction.CHOOSE_YEAR:
       return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.YEAR };
-    case 'CHOOSE_HALF_YEAR':
+    case ReducerAction.CHOOSE_HALF_YEAR:
       return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.HALF_YEAR };
-    case 'CHOOSE_LAST_MONTH':
+    case ReducerAction.CHOOSE_LAST_MONTH:
       return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.MONTH };
     default:
       return state;
@@ -160,7 +168,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
 
   /** Обработать клик по верхней кнопке селекта */
   const handleClickOnSelectButtonTop = () => {
-    dispatch({ type: 'TOGGLE_SELECT_LIST' });
+    dispatch({ type: ReducerAction.TOGGLE_SELECT_LIST });
   };
 
   /** Обработать клик по нижней кнопке селекта */
@@ -168,15 +176,15 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     const target = evt.target as HTMLButtonElement;
 
     if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
-      dispatch({ type: 'CHOOSE_YEAR' });
+      dispatch({ type: ReducerAction.CHOOSE_YEAR });
     }
 
     if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
-      dispatch({ type: 'CHOOSE_HALF_YEAR' });
+      dispatch({ type: ReducerAction.CHOOSE_HALF_YEAR });
     }
 
     if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
-      dispatch({ type: 'CHOOSE_LAST_MONTH' });
+      dispatch({ type: ReducerAction.CHOOSE_LAST_MONTH });
     }
   };
 
