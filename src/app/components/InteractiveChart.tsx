@@ -214,6 +214,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     selectIcon,
     selectValues,
     selectValue,
+    selectButtonBottom,
     graphBox,
     verticalScaleLabels,
     verticalScaleLabel,
@@ -242,7 +243,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
               return (
                 <li key={index} className={selectValue}>
                   <button
-                    className={selectButton}
+                    className={`${selectButton} ${selectButtonBottom}`}
                     onClick={handleClickOnSelectButtonBottom}
                     id={`select-button-bottom-${period.periodKey}`}
                   >

@@ -74,17 +74,28 @@
   position: absolute;
   top: calc(100% - 2px);
   left: 0;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  row-gap: 16px;
   flex-flow: column nowrap;
   width: 380px;
   margin: 0;
-  padding: 9px 20px;
+  padding: 20px;
   list-style-type: none;
   border: 2px solid #000aff;
   border-radius: 24px;
   background: #ffffff;
+}
+
+.selectValue {
+  width: 100%;
+}
+
+.selectButtonBottom {
+  width: 100%;
+  text-align: left;
 }
 
 .graphBox {
