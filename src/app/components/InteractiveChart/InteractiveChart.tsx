@@ -78,6 +78,11 @@ const mapLabelsAndValues = (periodName: string, labelsAndValues: [string, number
 const getGraphData = (data: Donator) => {
   const graphData = {} as GraphData;
 
+  // Проверить, есть ли данные в нужном формате
+  if (!data?.finance?.periods) {
+    return graphData;
+  }
+
   // Разбить данные графиков на периоды и объекты в формате «интервал/значение»
   const PeriodsWithData = Object.entries(data.finance.periods[0].graph) as [
     GraphPeriod,

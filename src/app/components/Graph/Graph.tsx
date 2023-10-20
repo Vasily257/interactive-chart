@@ -57,6 +57,9 @@ const Graph: React.FC<{
 }> = ({ isZeroColumnValue, currentPeriod, graphData }) => {
   const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
 
+  const columns = graphData[currentPeriod]?.columnValues || [];
+  const horizontalLabels = graphData[currentPeriod]?.horizontalScaleLabels || [];
+
   const {
     graphBox,
     verticalScaleLabels,
@@ -81,7 +84,7 @@ const Graph: React.FC<{
         })}
       </ul>
       <ul className={columnValues}>
-        {graphData[currentPeriod].columnValues.map((value, index) => {
+        {columns.map((value, index) => {
           const columnHeight = isZeroColumnValue ? 0 : calculateRelativeColumnHeight(value);
           const columnAnimation = isZeroColumnValue ? '' : columnAnimationType;
 
@@ -96,7 +99,7 @@ const Graph: React.FC<{
         })}
       </ul>
       <ul className={`${horizontalScaleLabels} ${isMonthPeriod && horizontalScaleLabelsExpanded}`}>
-        {graphData[currentPeriod].horizontalScaleLabels.map((label, index) => {
+        {horizontalLabels.map((label, index) => {
           return (
             <li key={index} className={horizontalScaleLabel}>
               {label}
