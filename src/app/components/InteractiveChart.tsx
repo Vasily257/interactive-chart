@@ -14,21 +14,17 @@ enum GraphPeriod {
 
 /** Перечисление действий, доступных в редьюсере */
 enum ReducerAction {
-  TOGGLE_SELECT_LIST = 'TOGGLE_SELECT_LIST',
+  OPEN_SELECT_LIST = 'OPEN_SELECT_LIST',
+  CLOSE_SELECT_LIST = 'CLOSE_SELECT_LIST',
   CHOOSE_YEAR = 'CHOOSE_YEAR',
   CHOOSE_HALF_YEAR = 'CHOOSE_HALF_YEAR',
   CHOOSE_LAST_MONTH = 'CHOOSE_LAST_MONTH',
+  RESET_COLUMN_VALUES = 'RESET_COLUMN_VALUES',
+  RETURN_COLUMN_VALUES = 'RETURN_COLUMN_VALUES',
 }
 
 /** Переменные состояния */
-type State = { currentPeriod: GraphPeriod; isSelectOpen: boolean };
-
-/** Действия, доступные в редьюсере */
-type Action =
-  | { type: ReducerAction.TOGGLE_SELECT_LIST }
-  | { type: ReducerAction.CHOOSE_YEAR }
-  | { type: ReducerAction.CHOOSE_HALF_YEAR }
-  | { type: ReducerAction.CHOOSE_LAST_MONTH };
+type State = { isSelectOpen: boolean; isZeroColumnValue: boolean; currentPeriod: GraphPeriod };
 
 /** Значения по вертикальной оси */
 const VERTICAL_SCALE_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
@@ -46,20 +42,27 @@ const reversedVerticalScaleItems = [...VERTICAL_SCALE_LABELS].reverse();
 /** Начальные значения переменных состояния */
 const initialState: State = {
   isSelectOpen: false,
+  isZeroColumnValue: false,
   currentPeriod: GraphPeriod.YEAR,
 };
 
 /** Функция-редьюсер */
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: { type: ReducerAction }) => {
   switch (action.type) {
-    case ReducerAction.TOGGLE_SELECT_LIST:
-      return { ...state, isSelectOpen: !state.isSelectOpen };
+    case ReducerAction.OPEN_SELECT_LIST:
+      return { ...state, isSelectOpen: true };
+    case ReducerAction.CLOSE_SELECT_LIST:
+      return { ...state, isSelectOpen: false };
     case ReducerAction.CHOOSE_YEAR:
-      return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.YEAR };
+      return { ...state, currentPeriod: GraphPeriod.YEAR };
     case ReducerAction.CHOOSE_HALF_YEAR:
-      return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.HALF_YEAR };
+      return { ...state, currentPeriod: GraphPeriod.HALF_YEAR };
     case ReducerAction.CHOOSE_LAST_MONTH:
-      return { ...state, isSelectOpen: false, currentPeriod: GraphPeriod.MONTH };
+      return { ...state, currentPeriod: GraphPeriod.MONTH };
+    case ReducerAction.RESET_COLUMN_VALUES:
+      return { ...state, isZeroColumnValue: true };
+    case ReducerAction.RETURN_COLUMN_VALUES:
+      return { ...state, isZeroColumnValue: false };
     default:
       return state;
   }
@@ -159,7 +162,10 @@ const calculateRelativeColumnHeight = (value: number) => {
 
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
-  const [state, dispatch] = useReducer<React.Reducer<State, Action>>(reducer, initialState);
+  const [state, dispatch] = useReducer<React.Reducer<State, { type: ReducerAction }>>(
+    reducer,
+    initialState
+  );
 
   const isMonthPeriod = state.currentPeriod === GraphPeriod.MONTH;
 
@@ -168,12 +174,19 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
 
   /** Обработать клик по верхней кнопке селекта */
   const handleClickOnSelectButtonTop = () => {
-    dispatch({ type: ReducerAction.TOGGLE_SELECT_LIST });
+    if (state.isSelectOpen) {
+      dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
+    } else {
+      dispatch({ type: ReducerAction.OPEN_SELECT_LIST });
+    }
   };
 
   /** Обработать клик по нижней кнопке селекта */
   const handleClickOnSelectButtonBottom = (evt: React.MouseEvent<HTMLButtonElement>) => {
     const target = evt.target as HTMLButtonElement;
+
+    dispatch({ type: ReducerAction.RESET_COLUMN_VALUES });
+    dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
 
     if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
       dispatch({ type: ReducerAction.CHOOSE_YEAR });
@@ -186,6 +199,10 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
       dispatch({ type: ReducerAction.CHOOSE_LAST_MONTH });
     }
+
+    setTimeout(() => {
+      dispatch({ type: ReducerAction.RETURN_COLUMN_VALUES });
+    }, 100);
   };
 
   const {
@@ -251,10 +268,13 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         </ul>
         <ul className={columnValues}>
           {graphData[state.currentPeriod].columnValues.map((value, index) => {
+            const columnHeight = state.isZeroColumnValue ? 0 : calculateRelativeColumnHeight(value);
+            const columntAnimation = state.isZeroColumnValue ? '' : 'height 0.5s';
+
             return (
               <li
                 key={index}
-                style={{ height: `calc(${calculateRelativeColumnHeight(value)} * 100%)` }}
+                style={{ height: `calc(${columnHeight} * 100%)`, transition: columntAnimation }}
                 className={`${columnValue} ${isMonthPeriod && columnValueThin}`}
                 data-value={value}
               ></li>
