@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useReducer } from 'react';
+import React, { useReducer, useMemo, useCallback } from 'react';
 import styles from './interactiveChart.module.css';
 import { Donator, GraphPeriod, GraphData } from '../../types/donator';
 import addLeadingZero from '../../helpers/addLeadingZero';
@@ -102,40 +102,43 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     initialState
   );
 
-  const graphData = getGraphData(data);
+  const graphData = useMemo(() => getGraphData(data), [data]);
 
   /** Обработать клик по верхней кнопке селекта */
-  const handleClickOnSelectButtonTop = () => {
+  const handleClickOnSelectButtonTop = useCallback(() => {
     if (state.isSelectOpen) {
       dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
     } else {
       dispatch({ type: ReducerAction.OPEN_SELECT_LIST });
     }
-  };
+  }, [state.isSelectOpen]);
 
   /** Обработать клик по нижней кнопке селекта */
-  const handleClickOnSelectButtonBottom = (evt: React.MouseEvent<HTMLButtonElement>) => {
-    const target = evt.target as HTMLButtonElement;
+  const handleClickOnSelectButtonBottom = useCallback(
+    (evt: React.MouseEvent<HTMLButtonElement>) => {
+      const target = evt.target as HTMLButtonElement;
 
-    dispatch({ type: ReducerAction.RESET_COLUMN_VALUES });
-    dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
+      dispatch({ type: ReducerAction.RESET_COLUMN_VALUES });
+      dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
 
-    if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
-      dispatch({ type: ReducerAction.CHOOSE_YEAR });
-    }
+      if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
+        dispatch({ type: ReducerAction.CHOOSE_YEAR });
+      }
 
-    if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
-      dispatch({ type: ReducerAction.CHOOSE_HALF_YEAR });
-    }
+      if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
+        dispatch({ type: ReducerAction.CHOOSE_HALF_YEAR });
+      }
 
-    if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
-      dispatch({ type: ReducerAction.CHOOSE_LAST_MONTH });
-    }
+      if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
+        dispatch({ type: ReducerAction.CHOOSE_LAST_MONTH });
+      }
 
-    setTimeout(() => {
-      dispatch({ type: ReducerAction.RETURN_COLUMN_VALUES });
-    }, 100);
-  };
+      setTimeout(() => {
+        dispatch({ type: ReducerAction.RETURN_COLUMN_VALUES });
+      }, 100);
+    },
+    []
+  );
 
   return (
     <div className={styles.chart}>
