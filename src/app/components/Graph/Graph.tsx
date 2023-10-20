@@ -7,6 +7,9 @@ import { GraphPeriod, GraphData } from '../../types/donator';
 /** Значения по вертикальной оси */
 const VERTICAL_SCALE_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
+/** Тип анимации для столбцов */
+const columnAnimationType = 'height 0.5s';
+
 /** Значения по вертикальной оси, отсортированные по убыванию */
 const reversedVerticalScaleItems = [...VERTICAL_SCALE_LABELS].reverse();
 
@@ -80,12 +83,12 @@ const Graph: React.FC<{
       <ul className={columnValues}>
         {graphData[currentPeriod].columnValues.map((value, index) => {
           const columnHeight = isZeroColumnValue ? 0 : calculateRelativeColumnHeight(value);
-          const columntAnimation = isZeroColumnValue ? '' : 'height 0.5s';
+          const columnAnimation = isZeroColumnValue ? '' : columnAnimationType;
 
           return (
             <li
               key={index}
-              style={{ height: `calc(${columnHeight} * 100%)`, transition: columntAnimation }}
+              style={{ height: `calc(${columnHeight} * 100%)`, transition: columnAnimation }}
               className={`${columnValue} ${isMonthPeriod && columnValueThin}`}
               data-value={value}
             ></li>
