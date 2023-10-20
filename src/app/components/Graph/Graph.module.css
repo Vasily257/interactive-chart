@@ -13,7 +13,7 @@
   line-height: 1;
 }
 
-.verticalScaleLabels {
+.valueAxisLabels {
   position: relative;
   top: -3%;
   left: 0;
@@ -83,7 +83,7 @@
   content: attr(data-value);
 }
 
-.horizontalScaleLabels {
+.timeAxisLabels {
   display: flex;
   justify-content: space-between;
   flex-flow: row nowrap;
@@ -94,14 +94,14 @@
   list-style-type: none;
 }
 
-.horizontalScaleLabelsExpanded {
+.timeAxisLabelsExpanded {
   position: relative;
   top: 0;
   left: -2.5%;
   width: 105%;
 }
 
-.horizontalScaleLabel {
+.timeAxisLabel {
   width: 40px;
   text-align: center;
 }

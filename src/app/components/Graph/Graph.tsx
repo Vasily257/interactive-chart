@@ -4,14 +4,14 @@ import React from 'react';
 import styles from './Graph.module.css';
 import { GraphPeriod, GraphData } from '../../types/donator';
 
-/** Значения по вертикальной оси */
-const VERTICAL_SCALE_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
+/** Метки по оси значений */
+const VALUE_AXIS_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
 /** Тип анимации для столбцов */
 const columnAnimationType = 'height 0.5s';
 
-/** Значения по вертикальной оси, отсортированные по убыванию */
-const reversedVerticalScaleItems = [...VERTICAL_SCALE_LABELS].reverse();
+/** Метки по оси значений, отсортированные по убыванию */
+const reversevValueAxisLabels = [...VALUE_AXIS_LABELS].reverse();
 
 /** Найти пограничные индексы */
 const findBorderIndexes = (array: number[], value: number) => {
@@ -40,7 +40,7 @@ const findBorderIndexes = (array: number[], value: number) => {
 };
 /** Рассчитать высоту колонки */
 const calculateRelativeColumnHeight = (value: number) => {
-  const labels = VERTICAL_SCALE_LABELS;
+  const labels = VALUE_AXIS_LABELS;
   const [left, right] = findBorderIndexes(labels, value);
 
   const baseHeight = (left + 1) / labels.length;
@@ -58,29 +58,25 @@ const Graph: React.FC<{
   const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
 
   const columns = graphData[currentPeriod]?.columnValues || [];
-  const horizontalLabels = graphData[currentPeriod]?.horizontalScaleLabels || [];
+  const timeLabels = graphData[currentPeriod]?.timeAxisLabels || [];
 
   const {
     graphBox,
-    verticalScaleLabels,
-    verticalScaleLabel,
+    valueAxisLabels,
+
     columnValues,
     columnValue,
     columnValueThin,
-    horizontalScaleLabels,
-    horizontalScaleLabelsExpanded,
-    horizontalScaleLabel,
+    timeAxisLabels,
+    timeAxisLabelsExpanded,
+    timeAxisLabel,
   } = styles;
 
   return (
     <div className={graphBox}>
-      <ul className={verticalScaleLabels}>
-        {reversedVerticalScaleItems.map((scaleItem, index) => {
-          return (
-            <li key={index} className={verticalScaleLabel}>
-              {scaleItem}
-            </li>
-          );
+      <ul className={valueAxisLabels}>
+        {reversevValueAxisLabels.map((scaleItem, index) => {
+          return <li key={index}>{scaleItem}</li>;
         })}
       </ul>
       <ul className={columnValues}>
@@ -98,10 +94,10 @@ const Graph: React.FC<{
           );
         })}
       </ul>
-      <ul className={`${horizontalScaleLabels} ${isMonthPeriod && horizontalScaleLabelsExpanded}`}>
-        {horizontalLabels.map((label, index) => {
+      <ul className={`${timeAxisLabels} ${isMonthPeriod && timeAxisLabelsExpanded}`}>
+        {timeLabels.map((label, index) => {
           return (
-            <li key={index} className={horizontalScaleLabel}>
+            <li key={index} className={timeAxisLabel}>
               {label}
             </li>
           );

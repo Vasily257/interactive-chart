@@ -50,20 +50,23 @@ const reducer = (state: State, action: { type: ReducerAction }) => {
   }
 };
 
-/** Преобразовать данные графиков */
-const mapLabelsAndValues = (periodName: string, labelsAndValues: [string, number | null][]) => {
-  const horizontalScaleLabels: Array<string | number> = [];
+/** Преобразовать данные графика по осям времени и значений */
+const mapValueAndTimeAxisLabels = (
+  periodName: string,
+  valueAndTimeAxisLabels: [string, number | null][]
+) => {
+  const timeAxisLabels: Array<string | number> = [];
   const columnValues: number[] = [];
 
-  labelsAndValues.map(([label, value], index) => {
+  valueAndTimeAxisLabels.map(([label, value], index) => {
     if (periodName === GraphPeriod.MONTH) {
       const isShowedLabel = index === 0 || (index + 1) % 5 === 0;
 
       if (isShowedLabel) {
-        horizontalScaleLabels.push(addLeadingZero(Number(label)));
+        timeAxisLabels.push(addLeadingZero(Number(label)));
       }
     } else {
-      horizontalScaleLabels.push(label.substring(0, 3));
+      timeAxisLabels.push(label.substring(0, 3));
     }
 
     if (typeof value === 'number') {
@@ -71,7 +74,7 @@ const mapLabelsAndValues = (periodName: string, labelsAndValues: [string, number
     }
   });
 
-  return { horizontalScaleLabels, columnValues };
+  return { timeAxisLabels, columnValues };
 };
 
 /** Получить данные для графиков (периоды и связанные значения) */
@@ -92,9 +95,9 @@ const getGraphData = (data: Donator) => {
   // Пересобрать данные графиков, чтобы их можно было перебрать в разметке
   PeriodsWithData.forEach(entry => {
     const periodName: GraphPeriod = entry[0];
-    const labelsAndValues: [string, number | null][] = Object.entries(entry[1]);
+    const timeAxisLabelsAndColumnLabels: [string, number | null][] = Object.entries(entry[1]);
 
-    graphData[periodName] = mapLabelsAndValues(periodName, labelsAndValues);
+    graphData[periodName] = mapValueAndTimeAxisLabels(periodName, timeAxisLabelsAndColumnLabels);
   });
 
   return graphData;

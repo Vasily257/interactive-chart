@@ -54,5 +54,5 @@ export enum GraphPeriod {
 
 export type GraphData = Record<
   GraphPeriod,
-  { horizontalScaleLabels: Array<string | number>; columnValues: number[] }
+  { timeAxisLabels: Array<string | number>; columnValues: number[] }
 >;
