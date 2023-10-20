@@ -212,6 +212,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     selectButtonTop,
     selectCurrentValue,
     selectIcon,
+    selectIconReversed,
     selectValues,
     selectValue,
     selectButtonBottom,
@@ -235,7 +236,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
           onClick={handleClickOnSelectButtonTop}
         >
           <span className={selectCurrentValue}>{GRAPH_PERIOD_TEXT[state.currentPeriod]}</span>
-          <span className={selectIcon}></span>
+          <span className={`${selectIcon} ${state.isSelectOpen && selectIconReversed}`}></span>
         </button>
         {state.isSelectOpen && (
           <ul className={selectValues}>

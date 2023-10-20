@@ -16,6 +16,7 @@
 }
 
 .selectButton {
+  transition: color 0.3s;
   border: none;
   background-color: transparent;
   font-size: 24px;
@@ -23,6 +24,7 @@
 }
 
 .selectButton:hover {
+  transition: color 0.1s;
   color: #000aff;
 }
 
@@ -55,6 +57,7 @@
   width: 17px;
   height: 3px;
   content: '';
+  transition: transform 0.2s;
   transform: translate(0, -50%);
   border-radius: 1.5px;
   background-color: #000aff;
@@ -70,11 +73,19 @@
   transform: rotate(-45deg);
 }
 
+.selectIconReversed::after {
+  transform: rotate(-45deg);
+}
+
+.selectIconReversed::before {
+  transform: rotate(45deg);
+}
+
 .selectValues {
   position: absolute;
+  z-index: 2;
   top: calc(100% - 2px);
   left: 0;
-  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
