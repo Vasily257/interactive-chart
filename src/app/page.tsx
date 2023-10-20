@@ -1,4 +1,4 @@
-import { InteractiveChart } from './components/InteractiveChart';
+import { InteractiveChart } from './components/InteractiveChart/InteractiveChart';
 import { Donator } from './types/donator';
 import styles from './page.module.css';
 import data from '../../public/data.json';

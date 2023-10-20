@@ -1,0 +1,107 @@
+.graphBox {
+  display: grid;
+  column-gap: 40px;
+  row-gap: 17px;
+  grid-template-columns: min-content 1fr;
+  grid-template-rows: 1fr min-content;
+  width: 100%;
+  height: 400px;
+  padding: 40px;
+  border-radius: 27px;
+  background-color: rgba(255, 0, 245, 0.05);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.verticalScaleLabels {
+  position: relative;
+  top: -3%;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-flow: column nowrap;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  height: 107%;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.columnValues {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-flow: row nowrap;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.columnValue {
+  position: relative;
+  width: 40px;
+}
+
+.columnValueThin {
+  width: 16px;
+}
+
+.columnValue::after {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 16px;
+  height: 100%;
+  content: '';
+  transform: translate(-50%, 0);
+  border-radius: 4px;
+  background-color: #000aff;
+}
+
+.columnValue:hover.columnValue::after {
+  box-shadow: 0 0 8px 6px rgba(0, 10, 255, 0.15);
+}
+
+.columnValue::before {
+  position: absolute;
+  z-index: 1;
+  top: -32px;
+  left: 50%;
+  padding: 2px 8px;
+  content: none;
+  transform: translate(-50%, 0);
+  border-radius: 6px;
+  background-color: #65ff8e;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.columnValue:hover.columnValue::before {
+  content: attr(data-value);
+}
+
+.horizontalScaleLabels {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row nowrap;
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.horizontalScaleLabelsExpanded {
+  position: relative;
+  top: 0;
+  left: -2.5%;
+  width: 105%;
+}
+
+.horizontalScaleLabel {
+  width: 40px;
+  text-align: center;
+}

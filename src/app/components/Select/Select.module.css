@@ -1,0 +1,98 @@
+.box {
+  position: relative;
+  align-self: flex-end;
+}
+
+.button {
+  transition: color 0.3s;
+  border: none;
+  background-color: transparent;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.button:hover {
+  transition: color 0.1s;
+  color: #000aff;
+}
+
+.buttonTop {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: row nowrap;
+  width: 380px;
+  height: 48px;
+  margin: 0;
+  padding: 9px 20px;
+  border: 2px solid #000aff;
+  border-radius: 24px;
+  background: #ffffff;
+}
+
+.buttonBottom {
+  width: 100%;
+  text-align: left;
+}
+
+.icon {
+  position: relative;
+  width: 27px;
+  height: 27px;
+}
+
+.icon::after,
+.icon::before {
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: 17px;
+  height: 3px;
+  content: '';
+  transition: transform 0.2s;
+  transform: translate(0, -50%);
+  border-radius: 1.5px;
+  background-color: #000aff;
+}
+
+.icon::after {
+  left: 0;
+  transform: rotate(45deg);
+}
+
+.icon::before {
+  left: 39%;
+  transform: rotate(-45deg);
+}
+
+.iconReversed::after {
+  transform: rotate(-45deg);
+}
+
+.iconReversed::before {
+  transform: rotate(45deg);
+}
+
+.values {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% - 2px);
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  row-gap: 16px;
+  flex-flow: column nowrap;
+  width: 380px;
+  margin: 0;
+  padding: 20px;
+  list-style-type: none;
+  border: 2px solid #000aff;
+  border-radius: 24px;
+  background: #ffffff;
+}
+
+.value {
+  width: 100%;
+}

@@ -38,11 +38,21 @@ interface GiftStats {
 }
 
 /** Параметры API-ответа (данные по донатеру) */
-interface Donator {
+export interface Donator {
   nickname: string;
   finance: FinanceData;
   gift_settings: GiftSettings;
   gift_stats: GiftStats;
 }
 
-export type { Donator };
+/** Периоды, для которых строится график (на основе PeriodEarningsGraph) */
+export enum GraphPeriod {
+  YEAR = 'year',
+  HALF_YEAR = 'half_year',
+  MONTH = 'month',
+}
+
+export type GraphData = Record<
+  GraphPeriod,
+  { horizontalScaleLabels: Array<string | number>; columnValues: number[] }
+>;
