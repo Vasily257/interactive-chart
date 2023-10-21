@@ -2,8 +2,8 @@
 
 import React, { useReducer, useMemo, useCallback } from 'react';
 import styles from './interactiveChart.module.css';
-import { Donator, GraphPeriod, GraphData } from '../../types/donator';
-import addLeadingZero from '../../helpers/addLeadingZero';
+import { Donator, GraphPeriod, GraphData } from '@/app/types/donator';
+import addLeadingZero from '@/app/helpers/addLeadingZero';
 import { Select } from '../Select/Select';
 import { Graph } from '../Graph/Graph';
 
