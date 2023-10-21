@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useReducer, useMemo, useCallback } from 'react';
+import React, { useReducer, useMemo, useCallback, useEffect } from 'react';
 import styles from './interactiveChart.module.css';
 import { Donator, GraphPeriod, GraphData } from '@/app/types/donator';
 import addLeadingZero from '@/app/helpers/addLeadingZero';
+import throttle from '@/app/helpers/throttle';
 import { Select } from '../Select/Select';
 import { Graph } from '../Graph/Graph';
 
@@ -16,17 +17,31 @@ enum ReducerAction {
   CHOOSE_LAST_MONTH = 'CHOOSE_LAST_MONTH',
   RESET_COLUMN_VALUES = 'RESET_COLUMN_VALUES',
   RETURN_COLUMN_VALUES = 'RETURN_COLUMN_VALUES',
+  SET_MOBILE = 'SET_MOBILE',
+  SET_DESKTOP = 'SET_DESKTOP',
 }
 
 /** Тип состояние */
-type State = { isSelectOpen: boolean; isZeroColumnValue: boolean; currentPeriod: GraphPeriod };
+type State = {
+  isSelectOpen: boolean;
+  isZeroColumnValue: boolean;
+  isMobile: boolean;
+  currentPeriod: GraphPeriod;
+};
 
 /** Начальное состояние */
 const initialState: State = {
   isSelectOpen: false,
   isZeroColumnValue: false,
+  isMobile: false,
   currentPeriod: GraphPeriod.YEAR,
 };
+
+/** Точка перехода между мобильной и десктопной ориентацией */
+const BREAK_POINT: number = 900;
+
+/** Задержка при изменении размера экрана */
+const RESIZE_TIMEOUT: number = 150;
 
 /** Функция-редьюсер */
 const reducer = (state: State, action: { type: ReducerAction }) => {
@@ -45,6 +60,10 @@ const reducer = (state: State, action: { type: ReducerAction }) => {
       return { ...state, isZeroColumnValue: true };
     case ReducerAction.RETURN_COLUMN_VALUES:
       return { ...state, isZeroColumnValue: false };
+    case ReducerAction.SET_MOBILE:
+      return { ...state, isMobile: true };
+    case ReducerAction.SET_DESKTOP:
+      return { ...state, isMobile: false };
     default:
       return state;
   }
@@ -148,6 +167,25 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     []
   );
 
+  // Добавить слежение за размером экрана
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > BREAK_POINT) {
+        dispatch({ type: ReducerAction.SET_DESKTOP });
+      } else {
+        dispatch({ type: ReducerAction.SET_MOBILE });
+      }
+    };
+
+    const resizingHandler = throttle(handleResize, RESIZE_TIMEOUT);
+
+    window.addEventListener('resize', resizingHandler);
+
+    return () => {
+      window.removeEventListener('resize', resizingHandler);
+    };
+  }, []);
+
   return (
     <div className={styles.chart}>
       <Select
@@ -158,6 +196,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       />
       <Graph
         isZeroColumnValue={state.isZeroColumnValue}
+        isMobile={state.isMobile}
         currentPeriod={state.currentPeriod}
         graphData={graphData}
       />

@@ -52,9 +52,10 @@ const calculateRelativeColumnHeight = (value: number) => {
 /** Компонент Graph */
 const Graph: React.FC<{
   isZeroColumnValue: boolean;
+  isMobile: boolean;
   currentPeriod: GraphPeriod;
   graphData: GraphData;
-}> = ({ isZeroColumnValue, currentPeriod, graphData }) => {
+}> = ({ isZeroColumnValue, isMobile, currentPeriod, graphData }) => {
   const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
 
   const columns = graphData[currentPeriod]?.columnValues || [];
