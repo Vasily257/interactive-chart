@@ -8,7 +8,7 @@ import { GraphPeriod, GraphData } from '../../types/donator';
 const VALUE_AXIS_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
 /** Тип анимации для столбцов */
-const columnAnimationType = 'height 0.5s';
+const COLUMN_ANIMATION_TYPE = 'height 0.5s';
 
 /** Метки по оси значений, отсортированные по убыванию */
 const reversevValueAxisLabels = [...VALUE_AXIS_LABELS].reverse();
@@ -83,7 +83,7 @@ const Graph: React.FC<{
       <ul className={columnValues}>
         {columns.map((value, index) => {
           const columnHeight = isZeroColumnValue ? 0 : calculateRelativeColumnHeight(value);
-          const columnAnimation = isZeroColumnValue ? '' : columnAnimationType;
+          const columnAnimation = isZeroColumnValue ? '' : COLUMN_ANIMATION_TYPE;
 
           return (
             <li
