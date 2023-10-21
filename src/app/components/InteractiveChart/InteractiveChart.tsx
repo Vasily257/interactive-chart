@@ -184,7 +184,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     return () => {
       window.removeEventListener('resize', resizingHandler);
     };
-  }, []);
+  }, [state.isMobile]);
 
   return (
     <div className={styles.chart}>
