@@ -167,16 +167,22 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     []
   );
 
+  /** Обработать изменение размера экрана */
+  const handleResize = () => {
+    if (window.innerWidth > BREAK_POINT) {
+      dispatch({ type: ReducerAction.SET_DESKTOP });
+    } else {
+      dispatch({ type: ReducerAction.SET_MOBILE });
+    }
+  };
+
+  // Запустить обработчик, чтобы отрисовать график при первом рендере
+  useEffect(() => {
+    handleResize();
+  }, []);
+
   // Добавить слежение за размером экрана
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > BREAK_POINT) {
-        dispatch({ type: ReducerAction.SET_DESKTOP });
-      } else {
-        dispatch({ type: ReducerAction.SET_MOBILE });
-      }
-    };
-
     const resizingHandler = throttle(handleResize, RESIZE_TIMEOUT);
 
     window.addEventListener('resize', resizingHandler);
@@ -184,7 +190,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     return () => {
       window.removeEventListener('resize', resizingHandler);
     };
-  }, [state.isMobile]);
+  }, []);
 
   return (
     <div className={styles.chart}>
