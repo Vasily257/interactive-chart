@@ -32,8 +32,18 @@ const Select: React.FC<{
 }) => {
   const unselectedPeriods = getUnselectedPeriods(currentPeriod);
 
-  const { box, button, buttonTop, currentValue, icon, iconReversed, values, value, buttonBottom } =
-    styles;
+  const {
+    box,
+    button,
+    buttonTop,
+    currentValue,
+    icon,
+    iconReversed,
+    values,
+    valuesShown,
+    value,
+    buttonBottom,
+  } = styles;
 
   return (
     <div className={box}>
@@ -41,23 +51,22 @@ const Select: React.FC<{
         <span className={currentValue}>{GRAPH_PERIOD_TEXT[currentPeriod]}</span>
         <span className={`${icon} ${isSelectOpen && iconReversed}`}></span>
       </button>
-      {isSelectOpen && (
-        <ul className={values}>
-          {unselectedPeriods.map((period, index) => {
-            return (
-              <li key={index} className={value}>
-                <button
-                  className={`${button} ${buttonBottom}`}
-                  onClick={handleClickOnSelectButtonBottom}
-                  id={`select-button-bottom-${period.periodKey}`}
-                >
-                  {period.periodValue}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+
+      <ul className={`${values} ${isSelectOpen && valuesShown}`}>
+        {unselectedPeriods.map((period, index) => {
+          return (
+            <li key={index} className={value}>
+              <button
+                className={`${button} ${buttonBottom}`}
+                onClick={handleClickOnSelectButtonBottom}
+                id={`select-button-bottom-${period.periodKey}`}
+              >
+                {period.periodValue}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };
