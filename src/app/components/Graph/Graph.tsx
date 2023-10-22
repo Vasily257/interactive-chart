@@ -46,8 +46,9 @@ const calculateRelativeColumnLength = (value: number) => {
   const labels = VALUE_AXIS_LABELS;
   const [left, right] = findBorderIndexes(labels, value);
 
-  const baseHeight = (left + 1) / labels.length;
-  const additionalHeight = (value - labels[left]) / (labels[right] - labels[left]) / labels.length;
+  const baseHeight = left / (labels.length - 1);
+  const additionalHeight =
+    (value - labels[left]) / (labels[right] - labels[left]) / (labels.length - 1);
 
   return baseHeight + additionalHeight;
 };
