@@ -10,6 +10,12 @@ const VALUE_AXIS_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 /** Метки по оси значений в обратном порядке */
 const reversedValueAxisLabels: number[] = [...VALUE_AXIS_LABELS].reverse();
 
+/** Тип анимации */
+const animationType = {
+  width: 'width 0.5s',
+  height: 'height 0.5s',
+};
+
 /** Найти пограничные индексы */
 const findBorderIndexes = (array: number[], value: number) => {
   let left: number = 0;
@@ -44,6 +50,11 @@ const calculateRelativeColumnLength = (value: number) => {
   const additionalHeight = (value - labels[left]) / (labels[right] - labels[left]) / labels.length;
 
   return baseHeight + additionalHeight;
+};
+
+/** Получить длину колонки как строку */
+const getColumnLengthAsString = (columnLength: number) => {
+  return `calc(${columnLength} * 100%)`;
 };
 
 /** Компонент Graph */
@@ -85,10 +96,10 @@ const Graph: React.FC<{
       <ul className={columnValues}>
         {columns.map((value, index) => {
           const columnLength = isZeroColumnValue ? 0 : calculateRelativeColumnLength(value);
-          const width = isMobile ? `calc(${columnLength} * 100%)` : '';
-          const height = !isMobile ? `calc(${columnLength} * 100%)` : '';
+          const width = isMobile ? getColumnLengthAsString(columnLength) : '';
+          const height = !isMobile ? getColumnLengthAsString(columnLength) : '';
 
-          const columnAnimationType = isMobile ? 'width 0.5s' : 'height 0.5s';
+          const columnAnimationType = isMobile ? animationType.width : animationType.height;
           const columnAnimation = isZeroColumnValue ? '' : columnAnimationType;
 
           return (
