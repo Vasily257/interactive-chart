@@ -22,16 +22,10 @@ const getUnselectedPeriods = (currentPeriod: GraphPeriod) => {
 const Select: React.FC<{
   isSelectOpen: boolean;
   currentPeriod: GraphPeriod;
-  handleClickOnSelectButtonTop: MouseEventHandler;
-  handleClickOnSelectButtonBottom: MouseEventHandler;
+  showSelectValues: () => void;
   hideSelectValues: () => void;
-}> = ({
-  isSelectOpen,
-  currentPeriod,
-  handleClickOnSelectButtonTop,
-  handleClickOnSelectButtonBottom,
-  hideSelectValues,
-}) => {
+  changeGraphPeriod: MouseEventHandler;
+}> = ({ isSelectOpen, currentPeriod, showSelectValues, changeGraphPeriod, hideSelectValues }) => {
   const unselectedPeriods = getUnselectedPeriods(currentPeriod);
   const selectValues = useRef(null);
 
@@ -68,7 +62,7 @@ const Select: React.FC<{
 
   return (
     <div className={box}>
-      <button className={`${button} ${buttonTop}`} onClick={handleClickOnSelectButtonTop}>
+      <button className={`${button} ${buttonTop}`} onClick={showSelectValues}>
         <span className={currentValue}>{GRAPH_PERIOD_TEXT[currentPeriod]}</span>
         <span className={`${icon} ${isSelectOpen && iconReversed}`}></span>
       </button>
@@ -79,7 +73,7 @@ const Select: React.FC<{
             <li key={index} className={value}>
               <button
                 className={`${button} ${buttonBottom}`}
-                onClick={handleClickOnSelectButtonBottom}
+                onClick={changeGraphPeriod}
                 id={`select-button-bottom-${period.periodKey}`}
               >
                 {period.periodValue}
