@@ -131,8 +131,8 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
 
   const graphData = useMemo(() => getGraphData(data), [data]);
 
-  /** Обработать клик по верхней кнопке селекта */
-  const handleClickOnSelectButtonTop = useCallback(() => {
+  /** Переключить видимость списка с периодами */
+  const toggleSelectValuesDisplay = useCallback(() => {
     if (state.isSelectOpen) {
       dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
     } else {
@@ -140,32 +140,29 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     }
   }, [state.isSelectOpen]);
 
-  /** Обработать клик по нижней кнопке селекта */
-  const handleClickOnSelectButtonBottom = useCallback(
-    (evt: React.MouseEvent<HTMLButtonElement>) => {
-      const target = evt.target as HTMLButtonElement;
+  /** Поменять выбранный период для графика */
+  const changeGraphPeriod = useCallback((evt: React.MouseEvent<HTMLButtonElement>) => {
+    const target = evt.target as HTMLButtonElement;
 
-      dispatch({ type: ReducerAction.RESET_COLUMN_VALUES });
-      dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
+    dispatch({ type: ReducerAction.RESET_COLUMN_VALUES });
+    dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
 
-      if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
-        dispatch({ type: ReducerAction.CHOOSE_YEAR });
-      }
+    if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
+      dispatch({ type: ReducerAction.CHOOSE_YEAR });
+    }
 
-      if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
-        dispatch({ type: ReducerAction.CHOOSE_HALF_YEAR });
-      }
+    if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
+      dispatch({ type: ReducerAction.CHOOSE_HALF_YEAR });
+    }
 
-      if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
-        dispatch({ type: ReducerAction.CHOOSE_LAST_MONTH });
-      }
+    if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
+      dispatch({ type: ReducerAction.CHOOSE_LAST_MONTH });
+    }
 
-      setTimeout(() => {
-        dispatch({ type: ReducerAction.RETURN_COLUMN_VALUES });
-      }, 100);
-    },
-    []
-  );
+    setTimeout(() => {
+      dispatch({ type: ReducerAction.RETURN_COLUMN_VALUES });
+    }, 100);
+  }, []);
 
   /** Обработать изменение размера экрана */
   const handleResize = () => {
@@ -197,8 +194,8 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       <Select
         isSelectOpen={state.isSelectOpen}
         currentPeriod={state.currentPeriod}
-        handleClickOnSelectButtonTop={handleClickOnSelectButtonTop}
-        handleClickOnSelectButtonBottom={handleClickOnSelectButtonBottom}
+        handleClickOnSelectButtonTop={toggleSelectValuesDisplay}
+        handleClickOnSelectButtonBottom={changeGraphPeriod}
       />
       <Graph
         isZeroColumnValue={state.isZeroColumnValue}
