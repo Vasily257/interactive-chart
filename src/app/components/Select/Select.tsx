@@ -1,6 +1,6 @@
 'use client';
 
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, useEffect, useRef } from 'react';
 import styles from './Select.module.css';
 import { GraphPeriod } from '../../types/donator';
 
@@ -24,13 +24,34 @@ const Select: React.FC<{
   currentPeriod: GraphPeriod;
   handleClickOnSelectButtonTop: MouseEventHandler;
   handleClickOnSelectButtonBottom: MouseEventHandler;
+  hideSelectValues: () => void;
 }> = ({
   isSelectOpen,
   currentPeriod,
   handleClickOnSelectButtonTop,
   handleClickOnSelectButtonBottom,
+  hideSelectValues,
 }) => {
   const unselectedPeriods = getUnselectedPeriods(currentPeriod);
+  const selectValues = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutsideSelectValues = (evt: MouseEvent) => {
+      if (evt.target !== selectValues.current) {
+        hideSelectValues();
+      }
+    };
+
+    if (isSelectOpen) {
+      document.addEventListener('click', handleClickOutsideSelectValues);
+    } else {
+      document.removeEventListener('click', handleClickOutsideSelectValues);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutsideSelectValues);
+    };
+  }, [selectValues, isSelectOpen, hideSelectValues]);
 
   const {
     box,
@@ -52,7 +73,7 @@ const Select: React.FC<{
         <span className={`${icon} ${isSelectOpen && iconReversed}`}></span>
       </button>
 
-      <ul className={`${values} ${isSelectOpen && valuesShown}`}>
+      <ul ref={selectValues} className={`${values} ${isSelectOpen && valuesShown}`}>
         {unselectedPeriods.map((period, index) => {
           return (
             <li key={index} className={value}>

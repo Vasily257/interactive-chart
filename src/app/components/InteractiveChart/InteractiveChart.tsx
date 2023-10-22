@@ -140,6 +140,11 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     }
   }, [state.isSelectOpen]);
 
+  /** Скрыть список с периодами */
+  const hideSelectValues = useCallback(() => {
+    dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
+  }, []);
+
   /** Поменять выбранный период для графика */
   const changeGraphPeriod = useCallback((evt: React.MouseEvent<HTMLButtonElement>) => {
     const target = evt.target as HTMLButtonElement;
@@ -196,6 +201,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         currentPeriod={state.currentPeriod}
         handleClickOnSelectButtonTop={toggleSelectValuesDisplay}
         handleClickOnSelectButtonBottom={changeGraphPeriod}
+        hideSelectValues={hideSelectValues}
       />
       <Graph
         isZeroColumnValue={state.isZeroColumnValue}
