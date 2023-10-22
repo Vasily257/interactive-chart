@@ -124,11 +124,13 @@ const getGraphData = (data: Donator) => {
 
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
+  // Иницализировать хранилище и функцию-редьюсер
   const [state, dispatch] = useReducer<React.Reducer<State, { type: ReducerAction }>>(
     reducer,
     initialState
   );
 
+  /** Данные по всем графикам */
   const graphData = useMemo(() => getGraphData(data), [data]);
 
   /** Отобразить список с периодами */

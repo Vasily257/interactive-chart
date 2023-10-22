@@ -26,7 +26,9 @@ const Select: React.FC<{
   hideSelectValues: () => void;
   changeGraphPeriod: MouseEventHandler;
 }> = ({ isSelectOpen, currentPeriod, showSelectValues, changeGraphPeriod, hideSelectValues }) => {
+  /** Все периоды, кроме выбранного */
   const unselectedPeriods = getUnselectedPeriods(currentPeriod);
+  /** Элемент списка с периодами */
   const selectValues = useRef(null);
 
   useEffect(() => {
