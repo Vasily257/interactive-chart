@@ -1,37 +1,44 @@
 .graphBox {
   display: grid;
-  column-gap: 40px;
-  row-gap: 17px;
+  column-gap: 10px;
+  row-gap: 25px;
   grid-template-columns: min-content 1fr;
-  grid-template-rows: 1fr min-content;
+  grid-template-rows: min-content 1fr;
   width: 100%;
-  height: 400px;
-  padding: 40px;
-  border-radius: 27px;
+  height: 100%;
+  min-height: 600px;
+  padding: 60px 40px 40px 20px;
+  border-radius: 20px;
   background-color: rgba(255, 0, 245, 0.05);
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1;
 }
 
-.valueAxisLabels {
-  position: relative;
-  top: -3%;
-  left: 0;
-  display: flex;
-  justify-content: space-between;
-  flex-flow: column nowrap;
-  grid-column: 1 / 2;
-  grid-row: 1 / 2;
-  height: 107%;
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
+@media screen and (min-width: 600px) {
+  .graphBox {
+    column-gap: 17px;
+    row-gap: 34px;
+    grid-template-rows: min-content 1fr;
+    min-height: 800px;
+    padding: 40px;
+    border-radius: 27px;
+    font-size: 20px;
+  }
 }
 
-.columnValues {
+@media screen and (min-width: 900px) {
+  .graphBox {
+    column-gap: 40px;
+    row-gap: 17px;
+    grid-template-rows: 1fr min-content;
+    height: 400px;
+    min-height: auto;
+  }
+}
+
+.valueAxisLabels {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
   flex-flow: row nowrap;
   grid-column: 2 / 3;
   grid-row: 1 / 2;
@@ -40,25 +47,88 @@
   list-style-type: none;
 }
 
-.columnValue {
-  position: relative;
-  width: 40px;
+@media screen and (min-width: 900px) {
+  .valueAxisLabels {
+    position: relative;
+    top: -3%;
+    left: 0;
+    flex-flow: column nowrap;
+    grid-column: 1 / 2;
+    height: 107%;
+  }
 }
 
-.columnValueThin {
-  width: 16px;
+.valueAxisLabel {
+  width: 0;
+  transform: rotate(-67.5deg);
+}
+
+@media screen and (min-width: 600px) {
+  .valueAxisLabel {
+    width: auto;
+    transform: rotate(0);
+  }
+}
+
+.columnValues {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-flow: column nowrap;
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+@media screen and (min-width: 900px) {
+  .columnValues {
+    align-items: flex-end;
+    flex-flow: row nowrap;
+    grid-row: 1 / 2;
+  }
+}
+
+.columnValue {
+  position: relative;
+  width: auto;
+  height: 20px;
+}
+
+@media screen and (min-width: 900px) {
+  .columnValue {
+    width: 40px;
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .columnValueThin {
+    width: 16px;
+  }
 }
 
 .columnValue::after {
   position: absolute;
-  top: 0;
-  left: 50%;
-  width: 16px;
-  height: 100%;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 16px;
   content: '';
-  transform: translate(-50%, 0);
+  transform: translate(0, -50%);
   border-radius: 4px;
   background-color: #000aff;
+}
+
+@media screen and (min-width: 900px) {
+  .columnValue::after {
+    top: 0;
+    left: 50%;
+    width: 16px;
+    height: 100%;
+    transform: translate(-50%, 0);
+  }
 }
 
 .columnValue:hover.columnValue::after {
@@ -68,15 +138,33 @@
 .columnValue::before {
   position: absolute;
   z-index: 1;
-  top: -32px;
-  left: 50%;
+  top: -28px;
+  right: 0;
+  left: auto;
   padding: 2px 8px;
   content: none;
-  transform: translate(-50%, 0);
+  transform: none;
+  transform: none;
   border-radius: 6px;
   background-color: #65ff8e;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5;
+}
+
+@media screen and (min-width: 600px) {
+  .columnValue::before {
+    top: -32px;
+    font-size: 16px;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .columnValue::before {
+    right: auto;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-size: 16px;
+  }
 }
 
 .columnValue:hover.columnValue::before {
@@ -86,19 +174,28 @@
 .timeAxisLabels {
   display: flex;
   justify-content: space-between;
-  flex-flow: row nowrap;
-  grid-column: 2 / 3;
+  flex-flow: column nowrap;
+  grid-column: 1 / 2;
   grid-row: 2 / 3;
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
 
-.timeAxisLabelsExpanded {
-  position: relative;
-  top: 0;
-  left: -2.5%;
-  width: 105%;
+@media screen and (min-width: 900px) {
+  .timeAxisLabels {
+    flex-flow: row nowrap;
+    grid-column: 2 / 3;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .timeAxisLabelsExpanded {
+    position: relative;
+    top: 0;
+    left: -2.5%;
+    width: 105%;
+  }
 }
 
 .timeAxisLabel {

@@ -7,11 +7,8 @@ import { GraphPeriod, GraphData } from '../../types/donator';
 /** Метки по оси значений */
 const VALUE_AXIS_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
-/** Тип анимации для столбцов */
-const COLUMN_ANIMATION_TYPE = 'height 0.5s';
-
-/** Метки по оси значений, отсортированные по убыванию */
-const reversevValueAxisLabels = [...VALUE_AXIS_LABELS].reverse();
+/** Метки по оси значений в обратном порядке */
+const reversedValueAxisLabels: number[] = [...VALUE_AXIS_LABELS].reverse();
 
 /** Найти пограничные индексы */
 const findBorderIndexes = (array: number[], value: number) => {
@@ -38,8 +35,8 @@ const findBorderIndexes = (array: number[], value: number) => {
 
   return [right, left];
 };
-/** Рассчитать высоту колонки */
-const calculateRelativeColumnHeight = (value: number) => {
+/** Рассчитать длину колонки относительно всей оси значений */
+const calculateRelativeColumnLength = (value: number) => {
   const labels = VALUE_AXIS_LABELS;
   const [left, right] = findBorderIndexes(labels, value);
 
@@ -57,6 +54,7 @@ const Graph: React.FC<{
   graphData: GraphData;
 }> = ({ isZeroColumnValue, isMobile, currentPeriod, graphData }) => {
   const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
+  const valueLabels = isMobile ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
 
   const columns = graphData[currentPeriod]?.columnValues || [];
   const timeLabels = graphData[currentPeriod]?.timeAxisLabels || [];
@@ -64,7 +62,7 @@ const Graph: React.FC<{
   const {
     graphBox,
     valueAxisLabels,
-
+    valueAxisLabel,
     columnValues,
     columnValue,
     columnValueThin,
@@ -76,19 +74,27 @@ const Graph: React.FC<{
   return (
     <div className={graphBox}>
       <ul className={valueAxisLabels}>
-        {reversevValueAxisLabels.map((scaleItem, index) => {
-          return <li key={index}>{scaleItem}</li>;
+        {valueLabels.map((scaleItem, index) => {
+          return (
+            <li className={valueAxisLabel} key={index}>
+              {scaleItem}
+            </li>
+          );
         })}
       </ul>
       <ul className={columnValues}>
         {columns.map((value, index) => {
-          const columnHeight = isZeroColumnValue ? 0 : calculateRelativeColumnHeight(value);
-          const columnAnimation = isZeroColumnValue ? '' : COLUMN_ANIMATION_TYPE;
+          const columnLength = isZeroColumnValue ? 0 : calculateRelativeColumnLength(value);
+          const width = isMobile ? `calc(${columnLength} * 100%)` : '';
+          const height = !isMobile ? `calc(${columnLength} * 100%)` : '';
+
+          const columnAnimationType = isMobile ? 'width 0.5s' : 'height 0.5s';
+          const columnAnimation = isZeroColumnValue ? '' : columnAnimationType;
 
           return (
             <li
               key={index}
-              style={{ height: `calc(${columnHeight} * 100%)`, transition: columnAnimation }}
+              style={{ width: width, height: height, transition: columnAnimation }}
               className={`${columnValue} ${isMonthPeriod && columnValueThin}`}
               data-value={value}
             ></li>
