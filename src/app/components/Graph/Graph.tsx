@@ -2,15 +2,14 @@
 
 import React from 'react';
 import styles from './Graph.module.css';
-import { GraphPeriod, GraphData } from '../../types/donator';
+import { GraphColumns } from '../../types/donator';
 
 /** Пропсы компонента Graph */
 interface Props {
   isColumnsValueZero: boolean;
   isMobileView: boolean;
   isMonthPeriod: boolean;
-  currentPeriod: GraphPeriod;
-  graphData: GraphData;
+  currentGraphData: GraphColumns;
 }
 
 /** Метки по оси значений */
@@ -84,16 +83,15 @@ const Graph: React.FC<Props> = ({
   isColumnsValueZero,
   isMobileView,
   isMonthPeriod,
-  currentPeriod,
-  graphData,
+  currentGraphData,
 }) => {
   /** Отметки на оси значений */
   const valueLabels = isMobileView ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
 
   /** Значения столбцов с данными */
-  const columns = graphData[currentPeriod]?.columnValues || [];
+  const columns = currentGraphData?.columnValues || [];
   /** Отметки на оси времени */
-  const timeLabels = graphData[currentPeriod]?.timeAxisLabels || [];
+  const timeLabels = currentGraphData?.timeAxisLabels || [];
 
   const {
     graphBox,

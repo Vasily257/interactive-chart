@@ -2,7 +2,7 @@
 
 import React, { useReducer, useMemo, useCallback, useEffect } from 'react';
 import styles from './interactiveChart.module.css';
-import { Donator, GraphPeriod, GraphData } from '@/app/types/donator';
+import { Donator, GraphPeriod, GraphColumnByPeriod } from '@/app/types/donator';
 import addLeadingZero from '@/app/helpers/addLeadingZero';
 import throttle from '@/app/helpers/throttle';
 import { Select } from '../Select/Select';
@@ -98,7 +98,7 @@ const mapValueAndTimeAxisLabels = (
 
 /** Получить данные для графиков (периоды и связанные значения) */
 const getGraphData = (data: Donator) => {
-  const graphData = {} as GraphData;
+  const graphData = {} as GraphColumnByPeriod;
 
   // Проверить, есть ли данные в нужном формате
   if (!data?.finance?.periods) {
@@ -201,8 +201,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         isColumnsValueZero={state.isColumnsValueZero}
         isMobileView={state.isMobileView}
         isMonthPeriod={isMonthPeriod}
-        currentPeriod={state.currentPeriod}
-        graphData={graphData}
+        currentGraphData={graphData[state.currentPeriod]}
       />
     </div>
   );

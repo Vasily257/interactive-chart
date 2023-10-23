@@ -52,8 +52,8 @@ export enum GraphPeriod {
   MONTH = 'month',
 }
 
-/** Данные для столбцов графиков, сгруппированные по периодам */
-export type GraphData = Record<
-  GraphPeriod,
-  { timeAxisLabels: Array<string | number>; columnValues: number[] }
->;
+/** Столбцы графика */
+export type GraphColumns = { timeAxisLabels: Array<string | number>; columnValues: Array<number> };
+
+/** Столбцы графиков, сгруппированные по периодам */
+export type GraphColumnByPeriod = Record<GraphPeriod, GraphColumns>;
