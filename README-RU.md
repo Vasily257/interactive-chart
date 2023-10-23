@@ -15,11 +15,11 @@
 `React` `CSS Modules` `TypeScript` `Next` `Turbopack`
 
 ## Ссылки
-Опубликованый сайт: https://interactive-chart-lilac.vercel.app/
+Опубликованый сайт: https://interactive-chart-lilac.vercel.app/  
 Макет: https://www.figma.com/file/ct6rzbxMtNxSYp4eTXEWv6/Frontend-test?type=design&node-id=0-1&mode=design&t=i9sNcEw7V0NMRwUE-0
 
 ## Использование
-Чтобы склонировать проект, надо открыть нужную директорию и использовать команды:
+Чтобы склонировать проект, надо открыть нужную директорию и использовать команды:  
 **HTTPS**: `git clone https://github.com/Vasily257/resume.git`  
 **SSH**: `git clone git@github.com:Vasily257/resume.git`
 
