@@ -140,27 +140,21 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   /** Поменять период для графика */
   const changeGraphPeriod = useCallback((evt: React.MouseEvent<HTMLButtonElement>) => {
     const target = evt.target as HTMLButtonElement;
+    const currentPeriod = target.id.replace('select-button-bottom-', '') as GraphPeriod;
 
-    // Сбросить значения колонок, чтобы они "вырастали" с нуля (анимация)
-    dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: true });
-    dispatch({ type: ActionAlias.SET_LIST_STATUS, value: false });
+    const isEnumValue = Object.values(GraphPeriod).includes(currentPeriod);
 
-    if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
-      dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.YEAR });
+    if (isEnumValue) {
+      // Сбросить значения колонок, чтобы они "вырастали" с нуля (анимация)
+      dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: true });
+      dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: currentPeriod });
+      dispatch({ type: ActionAlias.SET_LIST_STATUS, value: false });
+
+      // Добавить задержку, чтобы анимация роста срабатывала не сразу
+      setTimeout(() => {
+        dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: false });
+      }, 100);
     }
-
-    if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
-      dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.HALF_YEAR });
-    }
-
-    if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
-      dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.MONTH });
-    }
-
-    // Добавить задержку, чтобы анимация роста срабатывала не сразу
-    setTimeout(() => {
-      dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: false });
-    }, 100);
   }, []);
 
   /** Обработать изменение размера экрана */
