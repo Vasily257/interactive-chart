@@ -9,7 +9,8 @@ interface Props {
   isColumnsValueZero: boolean;
   isMobileView: boolean;
   isMonthPeriod: boolean;
-  currentGraphData: GraphColumns;
+  /** Данные выбранного периода */
+  currentPeriodData: GraphColumns;
 }
 
 /** Метки по оси значений */
@@ -83,15 +84,15 @@ const Graph: React.FC<Props> = ({
   isColumnsValueZero,
   isMobileView,
   isMonthPeriod,
-  currentGraphData,
+  currentPeriodData,
 }) => {
   /** Отметки на оси значений */
   const valueLabels = isMobileView ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
 
   /** Значения столбцов с данными */
-  const columns = currentGraphData?.columnValues || [];
+  const columns = currentPeriodData?.columnValues || [];
   /** Отметки на оси времени */
-  const timeLabels = currentGraphData?.timeAxisLabels || [];
+  const timeLabels = currentPeriodData?.timeAxisLabels || [];
 
   const {
     graphBox,

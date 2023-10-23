@@ -200,7 +200,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         isColumnsValueZero={state.isColumnsValueZero}
         isMobileView={state.isMobileView}
         isMonthPeriod={isMonthPeriod}
-        currentGraphData={graphData[state.currentPeriod]}
+        currentPeriodData={graphData[state.currentPeriod]}
       />
     </div>
   );
