@@ -4,6 +4,15 @@ import React, { MouseEventHandler, useEffect, useRef } from 'react';
 import styles from './Select.module.css';
 import { GraphPeriod } from '../../types/donator';
 
+/** Пропсы компонента Select */
+interface Props {
+  isSelectOpen: boolean;
+  currentPeriod: GraphPeriod;
+  showSelectValues: () => void;
+  hideSelectValues: () => void;
+  changeGraphPeriod: MouseEventHandler;
+}
+
 /** Описание периодов */
 const GRAPH_PERIOD_TEXT = {
   [GraphPeriod.YEAR]: 'For the last year',
@@ -19,13 +28,13 @@ const getUnselectedPeriods = (currentPeriod: GraphPeriod) => {
 };
 
 /** Компонент Select */
-const Select: React.FC<{
-  isSelectOpen: boolean;
-  currentPeriod: GraphPeriod;
-  showSelectValues: () => void;
-  hideSelectValues: () => void;
-  changeGraphPeriod: MouseEventHandler;
-}> = ({ isSelectOpen, currentPeriod, showSelectValues, changeGraphPeriod, hideSelectValues }) => {
+const Select: React.FC<Props> = ({
+  isSelectOpen,
+  currentPeriod,
+  showSelectValues,
+  changeGraphPeriod,
+  hideSelectValues,
+}) => {
   /** Все периоды, кроме выбранного */
   const unselectedPeriods = getUnselectedPeriods(currentPeriod);
   /** Элемент списка с периодами */

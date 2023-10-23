@@ -4,6 +4,14 @@ import React from 'react';
 import styles from './Graph.module.css';
 import { GraphPeriod, GraphData } from '../../types/donator';
 
+/** Пропсы компонента Graph */
+interface Props {
+  isColumnsValueZero: boolean;
+  isMobileView: boolean;
+  currentPeriod: GraphPeriod;
+  graphData: GraphData;
+}
+
 /** Метки по оси значений */
 const VALUE_AXIS_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 
@@ -71,12 +79,7 @@ const getColumnLengthAsString = (columnLength: number) => {
 };
 
 /** Компонент Graph */
-const Graph: React.FC<{
-  isColumnsValueZero: boolean;
-  isMobileView: boolean;
-  currentPeriod: GraphPeriod;
-  graphData: GraphData;
-}> = ({ isColumnsValueZero, isMobileView, currentPeriod, graphData }) => {
+const Graph: React.FC<Props> = ({ isColumnsValueZero, isMobileView, currentPeriod, graphData }) => {
   /** Выбраны ли данные за последний месяц */
   const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
   /** Отметки на оси значений */
