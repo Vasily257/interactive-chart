@@ -60,13 +60,13 @@ const getColumnLengthAsString = (columnLength: number) => {
 
 /** Компонент Graph */
 const Graph: React.FC<{
-  isZeroColumnValue: boolean;
-  isMobile: boolean;
+  isColumnsValueZero: boolean;
+  isMobileView: boolean;
   currentPeriod: GraphPeriod;
   graphData: GraphData;
-}> = ({ isZeroColumnValue, isMobile, currentPeriod, graphData }) => {
+}> = ({ isColumnsValueZero, isMobileView, currentPeriod, graphData }) => {
   const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
-  const valueLabels = isMobile ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
+  const valueLabels = isMobileView ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
 
   const columns = graphData[currentPeriod]?.columnValues || [];
   const timeLabels = graphData[currentPeriod]?.timeAxisLabels || [];
@@ -96,12 +96,12 @@ const Graph: React.FC<{
       </ul>
       <ul className={columnValues}>
         {columns.map((value, index) => {
-          const columnLength = isZeroColumnValue ? 0 : calculateRelativeColumnLength(value);
-          const width = isMobile ? getColumnLengthAsString(columnLength) : '';
-          const height = !isMobile ? getColumnLengthAsString(columnLength) : '';
+          const columnLength = isColumnsValueZero ? 0 : calculateRelativeColumnLength(value);
+          const width = isMobileView ? getColumnLengthAsString(columnLength) : '';
+          const height = !isMobileView ? getColumnLengthAsString(columnLength) : '';
 
-          const columnAnimationType = isMobile ? animationType.width : animationType.height;
-          const columnAnimation = isZeroColumnValue ? '' : columnAnimationType;
+          const columnAnimationType = isMobileView ? animationType.width : animationType.height;
+          const columnAnimation = isColumnsValueZero ? '' : columnAnimationType;
 
           return (
             <li

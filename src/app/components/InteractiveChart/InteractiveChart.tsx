@@ -8,32 +8,33 @@ import throttle from '@/app/helpers/throttle';
 import { Select } from '../Select/Select';
 import { Graph } from '../Graph/Graph';
 
-/** Перечисление действий, доступных в редьюсере */
-enum ReducerAction {
-  OPEN_SELECT_LIST = 'OPEN_SELECT_LIST',
-  CLOSE_SELECT_LIST = 'CLOSE_SELECT_LIST',
-  CHOOSE_YEAR = 'CHOOSE_YEAR',
-  CHOOSE_HALF_YEAR = 'CHOOSE_HALF_YEAR',
-  CHOOSE_LAST_MONTH = 'CHOOSE_LAST_MONTH',
-  RESET_COLUMN_VALUES = 'RESET_COLUMN_VALUES',
-  RETURN_COLUMN_VALUES = 'RETURN_COLUMN_VALUES',
-  SET_MOBILE = 'SET_MOBILE',
-  SET_DESKTOP = 'SET_DESKTOP',
+/** Тип состояние */
+interface State {
+  isSelectOpen: boolean;
+  isColumnsValueZero: boolean;
+  isMobileView: boolean;
+  currentPeriod: GraphPeriod;
 }
 
-/** Тип состояние */
-type State = {
-  isSelectOpen: boolean;
-  isZeroColumnValue: boolean;
-  isMobile: boolean;
-  currentPeriod: GraphPeriod;
-};
+/** Алиасы действий, доступных в редьюсере */
+enum ActionAlias {
+  IS_SELECT_LIST_OPEN = 'isSelectListOpen',
+  IS_COLUMNS_VALUE_ZERO = 'isColumnsValueZero',
+  IS_MOBILE_VIEW = 'isMobileView',
+  SET_GRAPH_PERIOD = 'setGraphPeriod',
+}
+
+type ReducerAction =
+  | { type: ActionAlias.IS_SELECT_LIST_OPEN; value: boolean }
+  | { type: ActionAlias.IS_COLUMNS_VALUE_ZERO; value: boolean }
+  | { type: ActionAlias.IS_MOBILE_VIEW; value: boolean }
+  | { type: ActionAlias.SET_GRAPH_PERIOD; value: GraphPeriod };
 
 /** Начальное состояние */
 const initialState: State = {
   isSelectOpen: false,
-  isZeroColumnValue: false,
-  isMobile: false,
+  isColumnsValueZero: false,
+  isMobileView: false,
   currentPeriod: GraphPeriod.YEAR,
 };
 
@@ -44,26 +45,16 @@ const BREAK_POINT: number = 900;
 const RESIZE_TIMEOUT: number = 150;
 
 /** Функция-редьюсер */
-const reducer = (state: State, action: { type: ReducerAction }) => {
+const reducer = (state: State, action: ReducerAction) => {
   switch (action.type) {
-    case ReducerAction.OPEN_SELECT_LIST:
-      return { ...state, isSelectOpen: true };
-    case ReducerAction.CLOSE_SELECT_LIST:
-      return { ...state, isSelectOpen: false };
-    case ReducerAction.CHOOSE_YEAR:
-      return { ...state, currentPeriod: GraphPeriod.YEAR };
-    case ReducerAction.CHOOSE_HALF_YEAR:
-      return { ...state, currentPeriod: GraphPeriod.HALF_YEAR };
-    case ReducerAction.CHOOSE_LAST_MONTH:
-      return { ...state, currentPeriod: GraphPeriod.MONTH };
-    case ReducerAction.RESET_COLUMN_VALUES:
-      return { ...state, isZeroColumnValue: true };
-    case ReducerAction.RETURN_COLUMN_VALUES:
-      return { ...state, isZeroColumnValue: false };
-    case ReducerAction.SET_MOBILE:
-      return { ...state, isMobile: true };
-    case ReducerAction.SET_DESKTOP:
-      return { ...state, isMobile: false };
+    case ActionAlias.IS_SELECT_LIST_OPEN:
+      return { ...state, isSelectOpen: action.value };
+    case ActionAlias.IS_COLUMNS_VALUE_ZERO:
+      return { ...state, isColumnsValueZero: action.value };
+    case ActionAlias.IS_MOBILE_VIEW:
+      return { ...state, isMobileView: action.value };
+    case ActionAlias.SET_GRAPH_PERIOD:
+      return { ...state, currentPeriod: action.value };
     default:
       return state;
   }
@@ -125,54 +116,51 @@ const getGraphData = (data: Donator) => {
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   // Иницализировать хранилище и функцию-редьюсер
-  const [state, dispatch] = useReducer<React.Reducer<State, { type: ReducerAction }>>(
-    reducer,
-    initialState
-  );
+  const [state, dispatch] = useReducer<React.Reducer<State, ReducerAction>>(reducer, initialState);
 
   /** Данные по всем графикам */
   const graphData = useMemo(() => getGraphData(data), [data]);
 
   /** Отобразить список с периодами */
   const showSelectValues = useCallback(() => {
-    dispatch({ type: ReducerAction.OPEN_SELECT_LIST });
+    dispatch({ type: ActionAlias.IS_SELECT_LIST_OPEN, value: true });
   }, []);
 
   /** Скрыть список с периодами */
   const hideSelectValues = useCallback(() => {
-    dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
+    dispatch({ type: ActionAlias.IS_SELECT_LIST_OPEN, value: false });
   }, []);
 
   /** Поменять выбранный период для графика */
   const changeGraphPeriod = useCallback((evt: React.MouseEvent<HTMLButtonElement>) => {
     const target = evt.target as HTMLButtonElement;
 
-    dispatch({ type: ReducerAction.RESET_COLUMN_VALUES });
-    dispatch({ type: ReducerAction.CLOSE_SELECT_LIST });
+    dispatch({ type: ActionAlias.IS_COLUMNS_VALUE_ZERO, value: true });
+    dispatch({ type: ActionAlias.IS_SELECT_LIST_OPEN, value: false });
 
     if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
-      dispatch({ type: ReducerAction.CHOOSE_YEAR });
+      dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.YEAR });
     }
 
     if (target.id === `select-button-bottom-${GraphPeriod.HALF_YEAR}`) {
-      dispatch({ type: ReducerAction.CHOOSE_HALF_YEAR });
+      dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.HALF_YEAR });
     }
 
     if (target.id === `select-button-bottom-${GraphPeriod.MONTH}`) {
-      dispatch({ type: ReducerAction.CHOOSE_LAST_MONTH });
+      dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.MONTH });
     }
 
     setTimeout(() => {
-      dispatch({ type: ReducerAction.RETURN_COLUMN_VALUES });
+      dispatch({ type: ActionAlias.IS_COLUMNS_VALUE_ZERO, value: false });
     }, 100);
   }, []);
 
   /** Обработать изменение размера экрана */
   const handleResize = () => {
     if (window.innerWidth > BREAK_POINT) {
-      dispatch({ type: ReducerAction.SET_DESKTOP });
+      dispatch({ type: ActionAlias.IS_MOBILE_VIEW, value: false });
     } else {
-      dispatch({ type: ReducerAction.SET_MOBILE });
+      dispatch({ type: ActionAlias.IS_MOBILE_VIEW, value: true });
     }
   };
 
@@ -202,8 +190,8 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
         changeGraphPeriod={changeGraphPeriod}
       />
       <Graph
-        isZeroColumnValue={state.isZeroColumnValue}
-        isMobile={state.isMobile}
+        isColumnsValueZero={state.isColumnsValueZero}
+        isMobileView={state.isMobileView}
         currentPeriod={state.currentPeriod}
         graphData={graphData}
       />
