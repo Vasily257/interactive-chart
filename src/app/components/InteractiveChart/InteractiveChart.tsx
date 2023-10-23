@@ -19,7 +19,7 @@ interface State {
 /** Алиасы действий */
 enum ActionAlias {
   /** Поменять статус открытия списка */
-  SET_LIST_STATUS = 'setListStatus',
+  SET_LIST_OPENING_STATUS = 'setListOpeningStatus',
   /** Присвоить колонкам значение "ноль" */
   SET_COLUMNS_VALUE_ZERO = 'setColumnsValueZero',
   /** Использовать мобильную ориентацию */
@@ -30,7 +30,7 @@ enum ActionAlias {
 
 /** Действия, доступные в редьюсере */
 type Action =
-  | { type: ActionAlias.SET_LIST_STATUS; value: boolean }
+  | { type: ActionAlias.SET_LIST_OPENING_STATUS; value: boolean }
   | { type: ActionAlias.SET_COLUMNS_VALUE_ZERO; value: boolean }
   | { type: ActionAlias.USE_MOBILE_VIEW; value: boolean }
   | { type: ActionAlias.SET_GRAPH_PERIOD; value: GraphPeriod };
@@ -55,7 +55,7 @@ const GROWTH_ANIMATION_TIMEOUT: number = 100;
 /** Функция-редьюсер */
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case ActionAlias.SET_LIST_STATUS:
+    case ActionAlias.SET_LIST_OPENING_STATUS:
       return { ...state, isSelectOpen: action.value };
     case ActionAlias.SET_COLUMNS_VALUE_ZERO:
       return { ...state, isColumnsValueZero: action.value };
@@ -132,12 +132,12 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
 
   /** Отобразить список с периодами */
   const showSelectValues = useCallback(() => {
-    dispatch({ type: ActionAlias.SET_LIST_STATUS, value: true });
+    dispatch({ type: ActionAlias.SET_LIST_OPENING_STATUS, value: true });
   }, []);
 
   /** Скрыть список с периодами */
   const hideSelectValues = useCallback(() => {
-    dispatch({ type: ActionAlias.SET_LIST_STATUS, value: false });
+    dispatch({ type: ActionAlias.SET_LIST_OPENING_STATUS, value: false });
   }, []);
 
   /** Поменять период для графика */
@@ -151,7 +151,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       // Сбросить значения колонок, чтобы они "вырастали" с нуля (анимация)
       dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: true });
       dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: currentPeriod });
-      dispatch({ type: ActionAlias.SET_LIST_STATUS, value: false });
+      dispatch({ type: ActionAlias.SET_LIST_OPENING_STATUS, value: false });
 
       // Добавить задержку, чтобы анимация роста срабатывала не сразу
       setTimeout(() => {
