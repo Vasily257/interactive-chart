@@ -1,34 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+[Russian version](https://github.com/Vasily257/interactive-chart/blob/master/README-RU.md)
 
-## Getting Started
+# Interactive Chart
+This project is a test task for the «Front-end Developer» position at [Codify Software](https://codify.software/).
 
-First, run the development server:
+## Functionality
+The project is a one-page website with an interactive chart that displays the uploaded data.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Features
+The project has several features:
+1. The project is written in TypeScript, JSDoc comments are also added.
+2. The site has not only a desktop, but also a mobile version.
+3. `useReduce` is used instead of the `Redux` library.
+4. There is an animation of the chart columns and a select list.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technology stack
+`React`, `CSS Modules` ,`TypeScript`, `Next`, `Turbopack`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Links
+Site: https://v1364358.hosted-by-vdsina.ru/resume/  
+Layout/Technical specification: https://www.figma.com/file/ct6rzbxMtNxSYp4eTXEWv6/Frontend-test?type=design&node-id=0-1&mode=design&t=i9sNcEw7V0NMRwUE-0
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Usage
+To clone a project, you need to open desired directory and use the command:  
+**HTTPS**: `git clone https://github.com/Vasily257/resume.git`  
+**SSH**: `git clone git@github.com:Vasily257/resume.git`
 
-## Learn More
+To start a project, you need to open the project folder in the terminal and use the command `npm run dev`.  
+Then you need to open the link http://localhost:3000 in the browser to see the result.
 
-To learn more about Next.js, take a look at the following resources:
+## Status
+The project is closed, there are no plans for completion.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[Russian version](https://github.com/Vasily257/interactive-chart/blob/master/README-RU.md)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
