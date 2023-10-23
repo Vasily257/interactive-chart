@@ -17,7 +17,7 @@ The project has several features:
 `React` `CSS Modules` `TypeScript` `Next` `Turbopack`
 
 ## Links
-Site: https://v1364358.hosted-by-vdsina.ru/resume/  
+Site: https://interactive-chart-lilac.vercel.app/  
 Layout: https://www.figma.com/file/ct6rzbxMtNxSYp4eTXEWv6/Frontend-test?type=design&node-id=0-1&mode=design&t=i9sNcEw7V0NMRwUE-0
 
 ## Usage
