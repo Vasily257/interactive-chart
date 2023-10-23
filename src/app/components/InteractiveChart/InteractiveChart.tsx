@@ -49,6 +49,9 @@ const BREAK_POINT: number = 900;
 /** Задержка при изменении размера экрана */
 const RESIZE_TIMEOUT: number = 150;
 
+/** Задержка перед анимацией роста */
+const GROWTH_ANIMATION_TIMEOUT: number = 100;
+
 /** Функция-редьюсер */
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -153,7 +156,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       // Добавить задержку, чтобы анимация роста срабатывала не сразу
       setTimeout(() => {
         dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: false });
-      }, 100);
+      }, GROWTH_ANIMATION_TIMEOUT);
     }
   }, []);
 
