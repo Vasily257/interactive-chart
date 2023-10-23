@@ -2,7 +2,7 @@
 
 import React, { useReducer, useMemo, useCallback, useEffect } from 'react';
 import styles from './interactiveChart.module.css';
-import { Donator, GraphPeriod, GraphColumnByPeriod } from '@/app/types/donator';
+import { Donator, GraphPeriod, GraphColumns, GraphColumnByPeriod } from '@/app/types/donator';
 import addLeadingZero from '@/app/helpers/addLeadingZero';
 import throttle from '@/app/helpers/throttle';
 import { Select } from '../Select/Select';
@@ -70,11 +70,10 @@ const reducer = (state: State, action: Action) => {
 
 /** Преобразовать данные периода в нужный формат */
 const mapValueAndTimeAxisLabels = (
-  periodName: string,
+  periodName: GraphPeriod,
   valueAndTimeAxisLabels: [string, number | null][]
 ) => {
-  const timeAxisLabels: Array<string | number> = [];
-  const columnValues: number[] = [];
+  const graphColumns: GraphColumns = { timeAxisLabels: [], columnValues: [] };
 
   valueAndTimeAxisLabels.map(([label, value], index) => {
     if (periodName === GraphPeriod.MONTH) {
@@ -82,18 +81,18 @@ const mapValueAndTimeAxisLabels = (
       const isShowedLabel = index === 0 || (index + 1) % 5 === 0;
 
       if (isShowedLabel) {
-        timeAxisLabels.push(addLeadingZero(Number(label)));
+        graphColumns.timeAxisLabels.push(addLeadingZero(Number(label)));
       }
     } else {
-      timeAxisLabels.push(label.substring(0, 3));
+      graphColumns.timeAxisLabels.push(label.substring(0, 3));
     }
 
     if (typeof value === 'number') {
-      columnValues.push(value);
+      graphColumns.columnValues.push(value);
     }
   });
 
-  return { timeAxisLabels, columnValues };
+  return graphColumns;
 };
 
 /** Получить данные для графиков (периоды и связанные значения) */
