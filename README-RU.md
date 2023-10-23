@@ -12,7 +12,7 @@
 4. Есть анимация столбцов диаграммы и выпадающего списка.
 
 ## Технологический стек
-`React`, `CSS Modules` ,`TypeScript`, `Next`, `Turbopack`
+`React` `CSS Modules` `TypeScript` `Next` `Turbopack`
 
 ## Ссылки
 Опубликованый сайт: https://interactive-chart-lilac.vercel.app/
@@ -20,10 +20,10 @@
 
 ## Использование
 Чтобы склонировать проект, надо открыть нужную директорию и использовать команды:
-**HTTPS**: `git clone https://github.com/Vasily257/resume.git`
+**HTTPS**: `git clone https://github.com/Vasily257/resume.git`  
 **SSH**: `git clone git@github.com:Vasily257/resume.git`
 
-Чтобы запустить проект, нужно открыть папку с проектом через терминал и использовать команду `npm run dev`,
+Чтобы запустить проект, нужно открыть папку с проектом через терминал и использовать команду `npm run dev`.    
 Потом надо перейти по ссылке http://localhost:3000 в браузере, чтобы увидеть результат.
 
 ## Статус

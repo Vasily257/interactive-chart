@@ -14,11 +14,11 @@ The project has several features:
 4. There is an animation of the chart columns and a select list.
 
 ## Technology stack
-`React`, `CSS Modules` ,`TypeScript`, `Next`, `Turbopack`
+`React` `CSS Modules` `TypeScript` `Next` `Turbopack`
 
 ## Links
 Site: https://v1364358.hosted-by-vdsina.ru/resume/  
-Layout/Technical specification: https://www.figma.com/file/ct6rzbxMtNxSYp4eTXEWv6/Frontend-test?type=design&node-id=0-1&mode=design&t=i9sNcEw7V0NMRwUE-0
+Layout: https://www.figma.com/file/ct6rzbxMtNxSYp4eTXEWv6/Frontend-test?type=design&node-id=0-1&mode=design&t=i9sNcEw7V0NMRwUE-0
 
 ## Usage
 To clone a project, you need to open desired directory and use the command:  
