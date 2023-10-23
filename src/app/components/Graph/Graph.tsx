@@ -10,21 +10,27 @@ const VALUE_AXIS_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
 /** Метки по оси значений в обратном порядке */
 const reversedValueAxisLabels: number[] = [...VALUE_AXIS_LABELS].reverse();
 
-/** Тип анимации */
+/** Типы анимации */
 const animationType = {
   width: 'width 0.5s',
   height: 'height 0.5s',
 };
 
-/** Найти пограничные индексы */
+/** Найти пограничные индексы
+ * @param array массив со значениями (обязательное)
+ * @param value значение, которое сравнивается со значениями массива (обязательное)
+ */
 const findBorderIndexes = (array: number[], value: number) => {
   let left: number = 0;
   let right: number = array.length - 1;
 
+  // Обработать случай, если сравниваемое значение
+  // находится выходит за пределы значений массива
   if (value < array[0] || value > array[right]) {
     return [-1, -1];
   }
 
+  // Найти пограничные индексы
   while (left < right) {
     if (array[left] < value) {
       left += 1;
@@ -39,15 +45,21 @@ const findBorderIndexes = (array: number[], value: number) => {
     }
   }
 
+  // Обработать случай, если сравниваемое значение
+  // находится выходит между серединными значениями массива
   return [right, left];
 };
 /** Рассчитать длину колонки относительно всей оси значений */
 const calculateRelativeColumnLength = (value: number) => {
   const labels = VALUE_AXIS_LABELS;
   const [left, right] = findBorderIndexes(labels, value);
+
+  /** Количество промежутков между отметками оси значениями */
   const gapsNumber = labels.length - 1;
 
+  /** Доля полностью заполненных промежутков */
   const baseHeight = left / gapsNumber;
+  /** Доля заполнения последнего промежутка */
   const additionalHeight = (value - labels[left]) / (labels[right] - labels[left]) / gapsNumber;
 
   return baseHeight + additionalHeight;
@@ -65,10 +77,14 @@ const Graph: React.FC<{
   currentPeriod: GraphPeriod;
   graphData: GraphData;
 }> = ({ isColumnsValueZero, isMobileView, currentPeriod, graphData }) => {
+  /** Выбраны ли данные за последний месяц */
   const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
+  /** Отметки на оси значений */
   const valueLabels = isMobileView ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
 
+  /** Значения столбцов с данными */
   const columns = graphData[currentPeriod]?.columnValues || [];
+  /** Отметки на оси времени */
   const timeLabels = graphData[currentPeriod]?.timeAxisLabels || [];
 
   const {

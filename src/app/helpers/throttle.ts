@@ -1,7 +1,7 @@
 /**
  * Уменьшить частоту выполнения функции
- * @param {Function} throttledFunction функция, которую нужно реже вызывать (обязательное)
- * @param {number} timeout интервал вызовов функции в мс (обязательное)
+ * @param throttledFunction функция, которую нужно реже выполнить (обязательное)
+ * @param timeout интервал вызовов функции в мс (обязательное)
  */
 export default function throttle(throttledFunction: (...args: any[]) => void, timeout: number) {
   let timer: ReturnType<typeof setTimeout> | null = null;

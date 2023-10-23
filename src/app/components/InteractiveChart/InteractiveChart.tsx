@@ -8,7 +8,7 @@ import throttle from '@/app/helpers/throttle';
 import { Select } from '../Select/Select';
 import { Graph } from '../Graph/Graph';
 
-/** Тип состояние */
+/** Состояние (хранилище стейт-переменных) */
 interface State {
   isSelectOpen: boolean;
   isColumnsValueZero: boolean;
@@ -16,18 +16,23 @@ interface State {
   currentPeriod: GraphPeriod;
 }
 
-/** Алиасы действий, доступных в редьюсере */
+/** Алиасы действий */
 enum ActionAlias {
-  IS_SELECT_LIST_OPEN = 'isSelectListOpen',
-  IS_COLUMNS_VALUE_ZERO = 'isColumnsValueZero',
-  IS_MOBILE_VIEW = 'isMobileView',
+  /** Поменять статус открытия списка */
+  SET_LIST_STATUS = 'setListStatus',
+  /** Присвоить колонкам значение "ноль" */
+  SET_COLUMNS_VALUE_ZERO = 'setColumnsValueZero',
+  /** Использовать мобильную ориентацию */
+  USE_MOBILE_VIEW = 'isMobileView',
+  /** Поменять временной периода графика  */
   SET_GRAPH_PERIOD = 'setGraphPeriod',
 }
 
-type ReducerAction =
-  | { type: ActionAlias.IS_SELECT_LIST_OPEN; value: boolean }
-  | { type: ActionAlias.IS_COLUMNS_VALUE_ZERO; value: boolean }
-  | { type: ActionAlias.IS_MOBILE_VIEW; value: boolean }
+/** Действия, доступные в редьюсере */
+type Action =
+  | { type: ActionAlias.SET_LIST_STATUS; value: boolean }
+  | { type: ActionAlias.SET_COLUMNS_VALUE_ZERO; value: boolean }
+  | { type: ActionAlias.USE_MOBILE_VIEW; value: boolean }
   | { type: ActionAlias.SET_GRAPH_PERIOD; value: GraphPeriod };
 
 /** Начальное состояние */
@@ -45,13 +50,13 @@ const BREAK_POINT: number = 900;
 const RESIZE_TIMEOUT: number = 150;
 
 /** Функция-редьюсер */
-const reducer = (state: State, action: ReducerAction) => {
+const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case ActionAlias.IS_SELECT_LIST_OPEN:
+    case ActionAlias.SET_LIST_STATUS:
       return { ...state, isSelectOpen: action.value };
-    case ActionAlias.IS_COLUMNS_VALUE_ZERO:
+    case ActionAlias.SET_COLUMNS_VALUE_ZERO:
       return { ...state, isColumnsValueZero: action.value };
-    case ActionAlias.IS_MOBILE_VIEW:
+    case ActionAlias.USE_MOBILE_VIEW:
       return { ...state, isMobileView: action.value };
     case ActionAlias.SET_GRAPH_PERIOD:
       return { ...state, currentPeriod: action.value };
@@ -60,7 +65,7 @@ const reducer = (state: State, action: ReducerAction) => {
   }
 };
 
-/** Преобразовать данные графика по осям времени и значений */
+/** Преобразовать данные периода в нужный формат */
 const mapValueAndTimeAxisLabels = (
   periodName: string,
   valueAndTimeAxisLabels: [string, number | null][]
@@ -70,6 +75,7 @@ const mapValueAndTimeAxisLabels = (
 
   valueAndTimeAxisLabels.map(([label, value], index) => {
     if (periodName === GraphPeriod.MONTH) {
+      /** Отметки, которые нужно отображать на оси времени */
       const isShowedLabel = index === 0 || (index + 1) % 5 === 0;
 
       if (isShowedLabel) {
@@ -115,28 +121,29 @@ const getGraphData = (data: Donator) => {
 
 /** Компонент InteractiveChart */
 const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
-  // Иницализировать хранилище и функцию-редьюсер
-  const [state, dispatch] = useReducer<React.Reducer<State, ReducerAction>>(reducer, initialState);
+  // Иницализировать стейт и функцию-редьюсер
+  const [state, dispatch] = useReducer<React.Reducer<State, Action>>(reducer, initialState);
 
-  /** Данные по всем графикам */
+  /** Данные по графикам, индексированные по периодам */
   const graphData = useMemo(() => getGraphData(data), [data]);
 
   /** Отобразить список с периодами */
   const showSelectValues = useCallback(() => {
-    dispatch({ type: ActionAlias.IS_SELECT_LIST_OPEN, value: true });
+    dispatch({ type: ActionAlias.SET_LIST_STATUS, value: true });
   }, []);
 
   /** Скрыть список с периодами */
   const hideSelectValues = useCallback(() => {
-    dispatch({ type: ActionAlias.IS_SELECT_LIST_OPEN, value: false });
+    dispatch({ type: ActionAlias.SET_LIST_STATUS, value: false });
   }, []);
 
-  /** Поменять выбранный период для графика */
+  /** Поменять период для графика */
   const changeGraphPeriod = useCallback((evt: React.MouseEvent<HTMLButtonElement>) => {
     const target = evt.target as HTMLButtonElement;
 
-    dispatch({ type: ActionAlias.IS_COLUMNS_VALUE_ZERO, value: true });
-    dispatch({ type: ActionAlias.IS_SELECT_LIST_OPEN, value: false });
+    // Сбросить значения колонок, чтобы они "вырастали" с нуля (анимация)
+    dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: true });
+    dispatch({ type: ActionAlias.SET_LIST_STATUS, value: false });
 
     if (target.id === `select-button-bottom-${GraphPeriod.YEAR}`) {
       dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.YEAR });
@@ -150,17 +157,18 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       dispatch({ type: ActionAlias.SET_GRAPH_PERIOD, value: GraphPeriod.MONTH });
     }
 
+    // Добавить задержку, чтобы анимация роста срабатывала не сразу
     setTimeout(() => {
-      dispatch({ type: ActionAlias.IS_COLUMNS_VALUE_ZERO, value: false });
+      dispatch({ type: ActionAlias.SET_COLUMNS_VALUE_ZERO, value: false });
     }, 100);
   }, []);
 
   /** Обработать изменение размера экрана */
   const handleResize = () => {
     if (window.innerWidth > BREAK_POINT) {
-      dispatch({ type: ActionAlias.IS_MOBILE_VIEW, value: false });
+      dispatch({ type: ActionAlias.USE_MOBILE_VIEW, value: false });
     } else {
-      dispatch({ type: ActionAlias.IS_MOBILE_VIEW, value: true });
+      dispatch({ type: ActionAlias.USE_MOBILE_VIEW, value: true });
     }
   };
 

@@ -20,9 +20,8 @@ const getDonatorData = async (): Promise<Donator | null> => {
   }
 };
 
-/** Рендер-функция домашней страницы */
+/** Домашняя страница */
 export default async function Home() {
-  /** Данные донатера */
   const donatorData = (await getDonatorData()) ?? (data as Donator);
 
   // Разметка
