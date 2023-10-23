@@ -6,9 +6,9 @@ import { GraphPeriod } from '../../types/donator';
 
 /** Описания периодов */
 const GRAPH_PERIOD_TEXT = {
-  [GraphPeriod.YEAR]: 'За последний год',
-  [GraphPeriod.HALF_YEAR]: 'За последние 6 месяцев',
-  [GraphPeriod.MONTH]: 'За последний месяц',
+  [GraphPeriod.YEAR]: 'For the last year',
+  [GraphPeriod.HALF_YEAR]: 'For the last 6 months',
+  [GraphPeriod.MONTH]: 'For the last month',
 };
 
 /** Получить список периодов, кроме текущего */
