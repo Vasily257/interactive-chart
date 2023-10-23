@@ -27,7 +27,7 @@ export default async function Home() {
   // Разметка
   return (
     <main className={styles.main}>
-      <h1 className="visually-hidden">Interactive chart</h1>
+      <h1 className={styles.visuallyHidden}>Interactive chart</h1>
       <InteractiveChart data={donatorData} />
     </main>
   );
