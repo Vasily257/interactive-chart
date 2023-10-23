@@ -6,8 +6,11 @@ import { GraphColumns } from '../../types/donator';
 
 /** Пропсы компонента Graph */
 interface Props {
+  /** Обнулены ли значения в столбцах графика */
   isColumnsValueZero: boolean;
+  /** Мобильная ли ориентация */
   isMobileView: boolean;
+  /** Выбран ли период за последний месяц */
   isMonthPeriod: boolean;
   /** Данные выбранного периода */
   currentPeriodData: GraphColumns;
@@ -58,7 +61,10 @@ const findBorderIndexes = (array: number[], value: number) => {
   // находится выходит между серединными значениями массива
   return [right, left];
 };
-/** Рассчитать длину колонки относительно всей оси значений */
+/**
+ * Рассчитать длину колонки относительно всей оси значений
+ * @param value значение колонки в единицах оси значений (обязательное)
+ * */
 const calculateRelativeColumnLength = (value: number) => {
   const labels = VALUE_AXIS_LABELS;
   const [left, right] = findBorderIndexes(labels, value);

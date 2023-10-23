@@ -52,7 +52,11 @@ const RESIZE_TIMEOUT: number = 150;
 /** Задержка перед анимацией роста */
 const GROWTH_ANIMATION_TIMEOUT: number = 100;
 
-/** Функция-редьюсер */
+/**
+ * Создать функцию-редьюсер
+ * @param state стейт с данными
+ * @param action доступные действия со стейтом
+ */
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case ActionAlias.SET_LIST_OPENING_STATUS:
@@ -68,7 +72,11 @@ const reducer = (state: State, action: Action) => {
   }
 };
 
-/** Преобразовать данные периода в нужный формат */
+/**
+ * Преобразовать данные периода в нужный формат
+ * @param periodName тип временного периода
+ * @param valueAndTimeAxisLabels массив кортежей в формате "временная метка/значение"
+ *  */
 const mapValueAndTimeAxisLabels = (
   periodName: GraphPeriod,
   valueAndTimeAxisLabels: [string, number | null][]
@@ -95,7 +103,10 @@ const mapValueAndTimeAxisLabels = (
   return graphColumns;
 };
 
-/** Получить данные для графиков (периоды и связанные значения) */
+/**
+ * Получить данные для графиков (периоды и связанные значения)
+ * @param data данные донатера, по которым строятся графики
+ */
 const getGraphData = (data: Donator) => {
   const graphData = {} as GraphColumnByPeriod;
 
@@ -142,7 +153,10 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
     dispatch({ type: ActionAlias.SET_LIST_OPENING_STATUS, value: false });
   }, []);
 
-  /** Поменять период для графика */
+  /**
+   * Поменять период для графика
+   * @param evt событие мыши (обязательное)
+   */
   const changeGraphPeriod = useCallback((evt: React.MouseEvent<HTMLButtonElement>) => {
     const target = evt.target as HTMLButtonElement;
     const currentPeriod = target.id.replace('select-button-bottom-', '') as GraphPeriod;

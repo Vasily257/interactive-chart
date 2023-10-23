@@ -6,10 +6,15 @@ import { GraphPeriod } from '../../types/donator';
 
 /** Пропсы компонента Select */
 interface Props {
+  /** Открыт ли список с периодами */
   isSelectOpen: boolean;
+  /** Текущий период */
   currentPeriod: GraphPeriod;
+  /** Показать список с периодами */
   showSelectValues: () => void;
+  /** Скрыть список с периодами */
   hideSelectValues: () => void;
+  /** Поменять текущий период */
   changeGraphPeriod: MouseEventHandler;
 }
 
@@ -20,7 +25,10 @@ const GRAPH_PERIOD_TEXT = {
   [GraphPeriod.MONTH]: 'For the last month',
 };
 
-/** Получить список периодов, кроме текущего */
+/**
+ * Получить список периодов, кроме текущего
+ * @param currentPeriod текущий период (обязательное)
+ */
 const getUnselectedPeriods = (currentPeriod: GraphPeriod) => {
   return Object.entries(GRAPH_PERIOD_TEXT)
     .filter(([periodKey]) => periodKey !== currentPeriod)
@@ -41,6 +49,10 @@ const Select: React.FC<Props> = ({
   const selectValues = useRef(null);
 
   useEffect(() => {
+    /**
+     * Обработать клик вне списка с периодами
+     * @param evt событие мыши (обязательное)
+     */
     const handleClickOutsideSelectValues = (evt: MouseEvent) => {
       if (evt.target !== selectValues.current) {
         hideSelectValues();
