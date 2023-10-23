@@ -22,8 +22,8 @@ Layout: https://www.figma.com/file/ct6rzbxMtNxSYp4eTXEWv6/Frontend-test?type=des
 
 ## Usage
 To clone a project, you need to open desired directory and use the command:  
-**HTTPS**: `git clone https://github.com/Vasily257/resume.git`  
-**SSH**: `git clone git@github.com:Vasily257/resume.git`
+**HTTPS**: `git clone https://github.com/Vasily257/interactive-chart.git`  
+**SSH**: `git@github.com:Vasily257/interactive-chart.git`
 
 To start a project, you need to open the project folder in the terminal and use the command `npm run dev`.  
 Then you need to open the link http://localhost:3000 in the browser to see the result.
