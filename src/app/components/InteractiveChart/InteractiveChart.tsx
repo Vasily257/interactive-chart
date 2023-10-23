@@ -127,6 +127,9 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
   // Иницализировать стейт и функцию-редьюсер
   const [state, dispatch] = useReducer<React.Reducer<State, Action>>(reducer, initialState);
 
+  /** Выбраны ли данные за последний месяц */
+  const isMonthPeriod = state.currentPeriod === GraphPeriod.MONTH;
+
   /** Данные по графикам, индексированные по периодам */
   const graphData = useMemo(() => getGraphData(data), [data]);
 
@@ -197,6 +200,7 @@ const InteractiveChart: React.FC<{ data: Donator }> = ({ data }) => {
       <Graph
         isColumnsValueZero={state.isColumnsValueZero}
         isMobileView={state.isMobileView}
+        isMonthPeriod={isMonthPeriod}
         currentPeriod={state.currentPeriod}
         graphData={graphData}
       />

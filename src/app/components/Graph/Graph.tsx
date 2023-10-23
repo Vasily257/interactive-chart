@@ -8,6 +8,7 @@ import { GraphPeriod, GraphData } from '../../types/donator';
 interface Props {
   isColumnsValueZero: boolean;
   isMobileView: boolean;
+  isMonthPeriod: boolean;
   currentPeriod: GraphPeriod;
   graphData: GraphData;
 }
@@ -79,9 +80,13 @@ const getColumnLengthAsString = (columnLength: number) => {
 };
 
 /** Компонент Graph */
-const Graph: React.FC<Props> = ({ isColumnsValueZero, isMobileView, currentPeriod, graphData }) => {
-  /** Выбраны ли данные за последний месяц */
-  const isMonthPeriod = currentPeriod === GraphPeriod.MONTH;
+const Graph: React.FC<Props> = ({
+  isColumnsValueZero,
+  isMobileView,
+  isMonthPeriod,
+  currentPeriod,
+  graphData,
+}) => {
   /** Отметки на оси значений */
   const valueLabels = isMobileView ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
 
