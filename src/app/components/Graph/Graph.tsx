@@ -56,7 +56,7 @@ const findBorderIndexes = (array: number[], value: number) => {
   }
 
   // Найти пограничные индексы
-  while (left < right) {
+  while (left <= right) {
     if (array[left] < value) {
       left += 1;
     } else {
