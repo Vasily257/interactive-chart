@@ -16,16 +16,29 @@ interface Props {
   currentPeriodData: GraphColumns;
 }
 
-/** Метки по оси значений */
-const VALUE_AXIS_LABELS: number[] = [0, 500, 1000, 2000, 5000, 10000];
-
-/** Метки по оси значений в обратном порядке */
-const reversedValueAxisLabels: number[] = [...VALUE_AXIS_LABELS].reverse();
+/** Количество промежутков между отметками на оси значений */
+const gapsNumberOnValueAxis = 5;
 
 /** Типы анимации */
 const animationType = {
   width: 'width 0.5s',
   height: 'height 0.5s',
+};
+
+/** Получить отметки оси значений
+ * @param maxValue максимальное значение на оси значений (обязательное)
+ */
+const getLabelsOfValueAxis = (maxValue: number) => {
+  const labels: number[] = [];
+
+  /** Длина промежутка между отметками (цена деления) */
+  const gapLength = Math.round(maxValue / gapsNumberOnValueAxis / 1000) * 1000;
+
+  for (let i = 0; i < gapsNumberOnValueAxis + 1; i++) {
+    labels.push(i * gapLength);
+  }
+
+  return labels;
 };
 
 /** Найти пограничные индексы
@@ -65,18 +78,17 @@ const findBorderIndexes = (array: number[], value: number) => {
 /**
  * Рассчитать длину колонки относительно всей оси значений
  * @param value значение колонки в единицах оси значений (обязательное)
+ * @param labels отметки на оси значений (обязательное)
  */
-const calculateRelativeColumnLength = (value: number) => {
-  const labels = VALUE_AXIS_LABELS;
+const calculateRelativeColumnLength = (value: number, labels: number[]) => {
   const [left, right] = findBorderIndexes(labels, value);
 
-  /** Количество промежутков между отметками оси значениями */
-  const gapsNumber = labels.length - 1;
-
   /** Доля полностью заполненных промежутков */
-  const baseHeight = left / gapsNumber;
+  const baseHeight = left / gapsNumberOnValueAxis;
+
   /** Доля заполнения последнего промежутка */
-  const additionalHeight = (value - labels[left]) / (labels[right] - labels[left]) / gapsNumber;
+  const additionalHeight =
+    (value - labels[left]) / (labels[right] - labels[left]) / gapsNumberOnValueAxis;
 
   return baseHeight + additionalHeight;
 };
@@ -93,11 +105,17 @@ const Graph: React.FC<Props> = ({
   isMonthPeriod,
   currentPeriodData,
 }) => {
+  /** Отметки на оси значений в порядке возрастания */
+  const valueLabelsInAscendingOrder = getLabelsOfValueAxis(currentPeriodData.maxValue);
+
   /** Отметки на оси значений */
-  const valueLabels = isMobileView ? VALUE_AXIS_LABELS : reversedValueAxisLabels;
+  const valueLabels = isMobileView
+    ? valueLabelsInAscendingOrder
+    : [...valueLabelsInAscendingOrder].reverse();
 
   /** Значения столбцов с данными */
   const columns = currentPeriodData?.columnValues || [];
+
   /** Отметки на оси времени */
   const timeLabels = currentPeriodData?.timeAxisLabels || [];
 
@@ -126,7 +144,10 @@ const Graph: React.FC<Props> = ({
       </ul>
       <ul className={columnValues}>
         {columns.map((value, index) => {
-          const columnLength = isColumnsValueZero ? 0 : calculateRelativeColumnLength(value);
+          const columnLength = isColumnsValueZero
+            ? 0
+            : calculateRelativeColumnLength(value, valueLabelsInAscendingOrder);
+
           const width = isMobileView ? getColumnLengthAsString(columnLength) : '';
           const height = !isMobileView ? getColumnLengthAsString(columnLength) : '';
 

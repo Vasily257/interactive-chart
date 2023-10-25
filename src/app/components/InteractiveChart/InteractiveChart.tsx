@@ -81,7 +81,7 @@ const mapValueAndTimeAxisLabels = (
   periodName: GraphPeriod,
   valueAndTimeAxisLabels: [string, number | null][]
 ) => {
-  const graphColumns: GraphColumns = { timeAxisLabels: [], columnValues: [] };
+  const graphColumns: GraphColumns = { timeAxisLabels: [], columnValues: [], maxValue: 0 };
 
   valueAndTimeAxisLabels.map(([label, value], index) => {
     if (periodName === GraphPeriod.MONTH) {
@@ -97,6 +97,7 @@ const mapValueAndTimeAxisLabels = (
 
     if (typeof value === 'number') {
       graphColumns.columnValues.push(value);
+      graphColumns.maxValue = Math.max(value, graphColumns.maxValue);
     }
   });
 
