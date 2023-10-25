@@ -65,7 +65,7 @@ const findBorderIndexes = (array: number[], value: number) => {
 /**
  * Рассчитать длину колонки относительно всей оси значений
  * @param value значение колонки в единицах оси значений (обязательное)
- * */
+ */
 const calculateRelativeColumnLength = (value: number) => {
   const labels = VALUE_AXIS_LABELS;
   const [left, right] = findBorderIndexes(labels, value);
