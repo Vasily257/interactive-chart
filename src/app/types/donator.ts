@@ -53,7 +53,11 @@ export enum GraphPeriod {
 }
 
 /** Столбцы графика */
-export type GraphColumns = { timeAxisLabels: Array<string | number>; columnValues: Array<number> };
+export type GraphColumns = {
+  timeAxisLabels: Array<string | number>;
+  columnValues: Array<number>;
+  maxValue: number;
+};
 
 /** Столбцы графиков, сгруппированные по периодам */
 export type GraphColumnByPeriod = Record<GraphPeriod, GraphColumns>;
