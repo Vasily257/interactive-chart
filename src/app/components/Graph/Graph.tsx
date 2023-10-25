@@ -84,11 +84,11 @@ const calculateRelativeColumnLength = (value: number, labels: number[]) => {
   const [left, right] = findBorderIndexes(labels, value);
 
   /** Доля полностью заполненных промежутков */
-  const baseHeight = left / gapsNumberOnValueAxis;
+  const baseHeight = left / gapsNumberOnValueAxis || 0;
 
   /** Доля заполнения последнего промежутка */
   const additionalHeight =
-    (value - labels[left]) / (labels[right] - labels[left]) / gapsNumberOnValueAxis;
+    (value - labels[left]) / (labels[right] - labels[left]) / gapsNumberOnValueAxis || 0;
 
   return baseHeight + additionalHeight;
 };
