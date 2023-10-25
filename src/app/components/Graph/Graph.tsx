@@ -32,7 +32,7 @@ const getLabelsOfValueAxis = (maxValue: number) => {
   const labels: number[] = [];
 
   /** Длина промежутка между отметками (цена деления) */
-  const gapLength = Math.round(maxValue / gapsNumberOnValueAxis / 1000) * 1000;
+  const gapLength = Math.ceil(maxValue / gapsNumberOnValueAxis / 1000) * 1000;
 
   for (let i = 0; i < gapsNumberOnValueAxis + 1; i++) {
     labels.push(i * gapLength);
